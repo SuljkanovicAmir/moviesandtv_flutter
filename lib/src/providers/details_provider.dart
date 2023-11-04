@@ -7,11 +7,6 @@ class DetailsProvider with ChangeNotifier {
   Map<String, dynamic> _movieDetails = {};
   Map<String, dynamic> get movieDetails => _movieDetails;
 
-  void clearDetails() {
-    _movieDetails.clear();
-    notifyListeners();
-  }
-
   Future<Map<String, dynamic>?> fetchDetails(mediaType, movieId) async {
     try {
       final details = await _tmdbApi.fetchDetails(mediaType, movieId);

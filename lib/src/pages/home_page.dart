@@ -9,6 +9,8 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String contentType = 'all';
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -38,7 +40,7 @@ class MyHomePage extends StatelessWidget {
                   height: 640,
                   child: Stack(
                     children: <Widget>[
-                      const MovieCarouselWidget(),
+                      MovieCarouselWidget(contentType),
                       Positioned.fill(
                         child: IgnorePointer(
                           ignoring: true,

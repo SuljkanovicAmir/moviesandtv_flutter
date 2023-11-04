@@ -44,8 +44,10 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Cineboxd',
+      themeMode: ThemeMode.dark,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
+            background: Colors.black,
             seedColor: const Color.fromARGB(0, 104, 58, 183)),
         useMaterial3: true,
       ),
@@ -58,26 +60,13 @@ class MyApp extends StatelessWidget {
           final String movieId = args['movieId'].toString();
           final detailsProvider =
               Provider.of<DetailsProvider>(context, listen: false);
-          detailsProvider.clearDetails();
 
           return MaterialPageRoute(
             builder: (context) =>
                 DetailsPage(mediaType, movieId, detailsProvider),
           );
         }
-        if (settings.name == '/similar') {
-          final Map<String, dynamic> args =
-              settings.arguments as Map<String, dynamic>;
-          final String mediaType = args['mediaType'].toString();
-          final String movieId = args['movieId'].toString();
-          final detailsProvider =
-              Provider.of<DetailsProvider>(context, listen: false);
-          detailsProvider.clearDetails();
-          return MaterialPageRoute(
-            builder: (context) =>
-                DetailsPage(mediaType, movieId, detailsProvider),
-          );
-        }
+
         if (settings.name == '/trailer') {
           final Map<String, dynamic> args =
               settings.arguments as Map<String, dynamic>;

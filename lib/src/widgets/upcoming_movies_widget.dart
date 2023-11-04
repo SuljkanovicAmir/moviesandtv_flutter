@@ -24,7 +24,7 @@ class UpcomingMoviesWidget extends StatelessWidget {
               color: const Color.fromARGB(0, 255, 255, 255),
               padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
               child: const Text(
-                'Upcoming movies',
+                'Upcoming Movies',
                 style: TextStyle(
                   color: Color.fromARGB(255, 255, 255, 255),
                   fontSize: 16,

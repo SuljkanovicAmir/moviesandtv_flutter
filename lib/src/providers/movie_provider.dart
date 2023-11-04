@@ -7,12 +7,27 @@ class MovieProvider with ChangeNotifier {
   List<Map<String, dynamic>> _movies = [];
   List<Map<String, dynamic>> get movies => _movies;
 
-  Future<void> fetchMovies() async {
+  void resetData() {
+    _movies = [];
+    notifyListeners();
+  }
+
+  Future<List<Map<String, dynamic>>?> fetchMovies(String contentType) async {
     try {
-      _movies = await _tmdbApi.fetchMovies();
+      final moviesData = await _tmdbApi.fetchMovies(contentType);
       notifyListeners();
+      // ignore: unnecessary_null_comparison
+      if (moviesData != null) {
+        _movies = moviesData;
+        notifyListeners();
+        return moviesData;
+      } else {
+        debugPrint('Cast are null or empty.');
+        return null;
+      }
     } catch (e) {
-      debugPrint('Error fetching movies: $e');
+      debugPrint('Error fetching cast: $e');
+      return null;
     }
   }
 }

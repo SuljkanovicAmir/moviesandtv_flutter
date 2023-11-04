@@ -5,9 +5,9 @@ class TMDBApi {
   static const apiKey = '9c48504327319ce49f2a496c8b5456b7';
   static const baseUrl = 'https://api.themoviedb.org/3';
 
-  Future<List<Map<String, dynamic>>> fetchMovies() async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/trending/tv/week?api_key=$apiKey'));
+  Future<List<Map<String, dynamic>>> fetchMovies(contentType) async {
+    final response = await http
+        .get(Uri.parse('$baseUrl/trending/$contentType/week?api_key=$apiKey'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseBody = jsonDecode(response.body);
@@ -40,8 +40,8 @@ class TMDBApi {
   }
 
   Future<List<Map<String, dynamic>>> fetchTopMovies() async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/movie/top_rated?api_key=$apiKey'));
+    final response = await http.get(Uri.parse(
+        '$baseUrl/discover/movie?api_key=$apiKey&primary_release_year=2023&language=en-US&page=1&sort_by=vote_average.desc&without_genres=99,10755&vote_count.gte=200'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseBody = jsonDecode(response.body);
@@ -157,6 +157,24 @@ class TMDBApi {
     } else {
       print('Response Body: ${response.body}');
       throw Exception('Failed to find content');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchNowPlayingMovies() async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/movie/now_playing?api_key=$apiKey'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      final List<dynamic> results = responseBody['results'];
+
+      final List<Map<String, dynamic>> movies =
+          results.whereType<Map<String, dynamic>>().toList();
+
+      return movies;
+    } else {
+      print('Response Body: ${response.body}');
+      throw Exception('Failed to load movies');
     }
   }
 }

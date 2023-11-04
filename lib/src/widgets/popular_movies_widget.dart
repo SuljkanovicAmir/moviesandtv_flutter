@@ -24,7 +24,7 @@ class PopularMoviesWidget extends StatelessWidget {
               color: const Color.fromARGB(0, 255, 255, 255),
               padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
               child: const Text(
-                'Popular movies',
+                'Popular Movies',
                 style: TextStyle(
                   color: Color.fromARGB(255, 255, 255, 255),
                   fontSize: 16,
@@ -38,7 +38,7 @@ class PopularMoviesWidget extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final movie = popularMoviesProvider.popularMovies[index];
                   final backdropPath = movie['backdrop_path'];
-                  final voteAverage = movie['vote_average'].toString();
+                  final voteAverage = movie['vote_average'].toStringAsFixed(1);
 
                   if (backdropPath != null) {
                     return GestureDetector(

@@ -57,7 +57,7 @@ class SimilarContentWidget extends StatelessWidget {
                                   } else {
                                     mediaType = 'tv';
                                   }
-                                  Navigator.pushNamed(context, '/similar',
+                                  Navigator.pushNamed(context, '/details',
                                       arguments: {
                                         'mediaType': mediaType,
                                         'movieId': movieId

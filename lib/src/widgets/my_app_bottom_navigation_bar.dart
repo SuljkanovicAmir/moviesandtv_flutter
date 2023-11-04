@@ -35,43 +35,75 @@ class _MyAppBottomNavigationBarState extends State<MyAppBottomNavigationBar> {
     return Scaffold(
       extendBody: true,
       body: children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: NavigationBar(
+        indicatorColor: Colors.white,
+        height: 60,
         elevation: 3,
-        unselectedItemColor: const Color.fromARGB(255, 172, 171, 171),
-        backgroundColor: const Color.fromARGB(166, 41, 41, 41),
-        iconSize: 30.0,
-        landscapeLayout: BottomNavigationBarLandscapeLayout.spread,
-        type: BottomNavigationBarType.fixed,
-        selectedFontSize: 0,
-        unselectedFontSize: 0,
-        selectedIconTheme:
-            const IconThemeData(color: Color.fromARGB(255, 255, 255, 255)),
-        currentIndex: _currentIndex,
-        onTap: (int index) {
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        backgroundColor: Color.fromARGB(193, 12, 12, 12),
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (int index) {
           setState(() {
             _currentIndex = index;
           });
+          if (index != 4) {
+            searchProvider.clearDetails();
+          }
         },
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            backgroundColor: Colors.transparent,
-            icon: Icon(Icons.home),
+        destinations: const [
+          NavigationDestination(
+            selectedIcon: Icon(
+              Icons.home,
+              color: Colors.black,
+            ),
+            icon: Icon(
+              Icons.home,
+              color: Colors.white,
+            ),
             label: '',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.movie_creation_outlined),
+          NavigationDestination(
+            selectedIcon: Icon(
+              Icons.movie,
+              color: Colors.black,
+            ),
+            icon: Icon(
+              Icons.movie_creation_outlined,
+              color: Colors.white,
+            ),
             label: '',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.tv),
+          NavigationDestination(
+            selectedIcon: Icon(
+              Icons.tv,
+              color: Colors.black,
+            ),
+            icon: Icon(
+              Icons.tv,
+              color: Colors.white,
+            ),
             label: '',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.download),
+          NavigationDestination(
+            selectedIcon: Icon(
+              Icons.download,
+              color: Colors.black,
+            ),
+            icon: Icon(
+              Icons.download,
+              color: Colors.white,
+            ),
             label: '',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+          NavigationDestination(
+            selectedIcon: Icon(
+              Icons.search,
+              color: Colors.black,
+            ),
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
             label: '',
           ),
         ],

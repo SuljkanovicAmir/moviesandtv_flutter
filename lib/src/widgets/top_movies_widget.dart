@@ -24,7 +24,7 @@ class TopMoviesWidget extends StatelessWidget {
               color: Colors.transparent,
               padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
               child: const Text(
-                'Top movies',
+                'Top Rated Movies 2023',
                 style: TextStyle(
                   color: Color.fromARGB(255, 255, 255, 255),
                   fontSize: 16,
