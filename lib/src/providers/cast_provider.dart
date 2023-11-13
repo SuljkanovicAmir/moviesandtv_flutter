@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../services/tmdb_api.dart';
 
 class CastProvider with ChangeNotifier {
-  final TMDBApi _tmdbApi = TMDBApi();
+  final TMDBApi _tmdbApi;
+  CastProvider(this._tmdbApi);
 
   Map<String, dynamic> _cast = {};
   Map<String, dynamic> get cast => _cast;

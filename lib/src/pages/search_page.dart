@@ -1,8 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
-import 'package:moviesandtv_flutter/src/pages/movies_page.dart';
 import 'package:moviesandtv_flutter/src/providers/search_provider.dart';
+import 'package:moviesandtv_flutter/src/widgets/appBar_widget.dart';
+import 'package:moviesandtv_flutter/src/widgets/drawer_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/popular_movies_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:moviesandtv_flutter/utils/api_constants.dart';
 
 class MySearchPage extends StatefulWidget {
   final SearchProvider searchProvider;
@@ -26,77 +30,12 @@ class _MySearchPageState extends State<MySearchPage> {
   @override
   Widget build(BuildContext context) {
     final searchProvider = Provider.of<SearchProvider>(context);
-    final data = searchProvider.searchData['results'];
+    final data = searchProvider.searchData;
 
     return Scaffold(
       key: _scaffoldKey,
+      drawer: const DrawerWidget(),
       backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-      appBar: AppBar(
-        title: const Text(
-          'HBO',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-        elevation: 0,
-        scrolledUnderElevation: 0.0,
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          color: Colors.white,
-          onPressed: () {
-            _scaffoldKey.currentState?.openDrawer();
-          },
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.person),
-            color: Colors.white,
-            onPressed: () {},
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        backgroundColor: Colors.black,
-        elevation: 20,
-        width: MediaQuery.of(context).size.width / 1.7,
-        child: ListView(
-          children: <Widget>[
-            const UserAccountsDrawerHeader(
-              accountName: Text(
-                'Amir',
-              ),
-              accountEmail: Text(''),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(Icons.person),
-              ),
-            ),
-            ListTile(
-              textColor: Colors.white,
-              leading: Icon(Icons.movie),
-              title: Text('Movies'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MyMoviesPages()),
-                );
-              },
-            ),
-            ListTile(
-              textColor: Colors.white,
-              leading: Icon(Icons.tv),
-              title: Text('Series'),
-              onTap: () {
-                // Handle navigation to the settings page
-              },
-            ),
-          ],
-        ),
-      ),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -123,6 +62,7 @@ class _MySearchPageState extends State<MySearchPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            AppBarWidget(_scaffoldKey),
             Container(
               margin: const EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -132,11 +72,17 @@ class _MySearchPageState extends State<MySearchPage> {
               ),
               child: TextField(
                 onChanged: (query) {
-                  if (query.isEmpty) {
-                    searchProvider.clearDetails();
-                  } else {
-                    searchProvider.fetchSearch(query);
-                  }
+                  EasyDebounce.debounce(
+                    'searchDebounce',
+                    const Duration(milliseconds: 500),
+                    () {
+                      if (query.isEmpty) {
+                        searchProvider.clearDetails();
+                      } else {
+                        searchProvider.getSearch(query);
+                      }
+                    },
+                  );
                 },
                 controller: myController,
                 style: const TextStyle(color: Colors.white),
@@ -155,7 +101,7 @@ class _MySearchPageState extends State<MySearchPage> {
                 ),
               ),
             ),
-            if (data != null)
+            if (data!.isNotEmpty)
               Expanded(
                 child: GridView.count(
                   padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
@@ -168,36 +114,40 @@ class _MySearchPageState extends State<MySearchPage> {
                     data.length,
                     (index) {
                       final content = data[index];
-                      final posterPath = content['poster_path'];
-                      if (posterPath != null) {
+                      final posterPath = content.posterPath;
+                      if (posterPath.isNotEmpty) {
                         return GestureDetector(
-                          onTap: () {
-                            final movieId = content['id'];
-                            String mediaType = '';
-                            if (content.containsKey('title')) {
-                              mediaType = 'movie';
-                            } else {
-                              mediaType = 'tv';
-                            }
+                            onTap: () {
+                              final movieId = content.id;
+                              String mediaType = '';
+                              if (content.title.isNotEmpty) {
+                                mediaType = 'movie';
+                              } else {
+                                mediaType = 'tv';
+                              }
 
-                            Navigator.pushNamed(context, '/details',
-                                arguments: {
-                                  'mediaType': mediaType,
-                                  'movieId': movieId,
-                                });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 0,
-                              horizontal: 1,
-                            ),
-                            // Set the desired width as a fraction (50% in this case)
-                            child: Image.network(
-                                width: double.infinity,
-                                'https://image.tmdb.org/t/p/w500/$posterPath',
-                                fit: BoxFit.fitHeight),
-                          ),
-                        );
+                              Navigator.pushNamed(context, '/details',
+                                  arguments: {
+                                    'mediaType': mediaType,
+                                    'movieId': movieId,
+                                  });
+                            },
+                            child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 0,
+                                  horizontal: 1,
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      '${ApiConstants.BASE_IMAGE_URL}$posterPath',
+                                  width: double.infinity,
+                                  fit: BoxFit.fitHeight,
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Color.fromARGB(160, 255, 255, 255),
+                                    ),
+                                  ),
+                                )));
                       }
                       return Container(
                         color: const Color.fromARGB(0, 0, 0, 0),
@@ -207,11 +157,11 @@ class _MySearchPageState extends State<MySearchPage> {
                 ),
               )
             else
-              Container(
+              SizedBox(
                 height: MediaQuery.of(context).size.height < 500
                     ? MediaQuery.of(context).size.height - 180
                     : null,
-                child: SingleChildScrollView(
+                child: const SingleChildScrollView(
                   child: PopularMoviesWidget(),
                 ),
               )

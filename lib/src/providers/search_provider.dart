@@ -1,32 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:moviesandtv_flutter/src/models/movie_model.dart';
 import '../services/tmdb_api.dart';
 
 class SearchProvider with ChangeNotifier {
-  final TMDBApi _tmdbApi = TMDBApi();
+  final TMDBApi _tmdbApi;
+  SearchProvider(this._tmdbApi);
 
-  Map<String, dynamic> _searchData = {};
-  Map<String, dynamic> get searchData => _searchData;
+  List<MovieModel>? _searchData = [];
+  List<MovieModel>? get searchData => _searchData;
 
   void clearDetails() {
-    _searchData.clear();
+    _searchData?.clear();
     notifyListeners();
   }
 
-  Future<Map<String, dynamic>?> fetchSearch(query) async {
+  Future<List<MovieModel>?> getSearch(query) async {
     try {
-      final details = await _tmdbApi.fetchSearch(query);
-      // ignore: unnecessary_null_comparison
-      if (details != null) {
-        _searchData = details;
-        notifyListeners();
-        return details;
-      } else {
-        debugPrint('Search data is null or empty.');
-        return null;
-      }
+      final moviesResult = await _tmdbApi.getSearch(query);
+      _searchData = moviesResult;
+      notifyListeners();
+      return moviesResult;
     } catch (e) {
-      debugPrint('Error finding content: $e');
-      return null;
+      debugPrint('Error fetching movies: $e');
+      throw Exception('Failed to fetch movies $e');
     }
   }
 }

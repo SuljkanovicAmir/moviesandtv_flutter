@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:moviesandtv_flutter/src/models/movie_details_model.dart';
 import '../services/tmdb_api.dart';
 
 class DetailsProvider with ChangeNotifier {
-  final TMDBApi _tmdbApi = TMDBApi();
+  final TMDBApi _tmdbApi;
+  DetailsProvider(this._tmdbApi);
 
-  Map<String, dynamic> _movieDetails = {};
-  Map<String, dynamic> get movieDetails => _movieDetails;
+  MovieDetailModel? _movieDetails;
+  MovieDetailModel? get movieDetails => _movieDetails;
 
-  Future<Map<String, dynamic>?> fetchDetails(mediaType, movieId) async {
+  Future<MovieDetailModel?> getMovieDetails(mediaType, movieId) async {
     try {
-      final details = await _tmdbApi.fetchDetails(mediaType, movieId);
-      // ignore: unnecessary_null_comparison
-      if (details != null) {
-        _movieDetails = details;
-        notifyListeners();
-        return details;
-      } else {
-        debugPrint('Movie details are null or empty.');
-        return null;
-      }
+      final details = await _tmdbApi.getMovieDetails(mediaType, movieId);
+      _movieDetails = details;
+      notifyListeners();
+      return details;
     } catch (e) {
       debugPrint('Error fetching movie details: $e');
       return null;

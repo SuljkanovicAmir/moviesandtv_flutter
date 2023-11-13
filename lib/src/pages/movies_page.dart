@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:moviesandtv_flutter/src/widgets/appbar_widget.dart';
+import 'package:moviesandtv_flutter/src/widgets/drawer_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/movie_carousel.dart';
+import 'package:moviesandtv_flutter/src/widgets/now_playing_movies_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/popular_movies_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/top_movies_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/upcoming_movies_widget.dart';
 
 class MyMoviesPages extends StatelessWidget {
-  const MyMoviesPages({super.key});
+  MyMoviesPages({super.key});
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     const String contentType = 'movie';
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: const DrawerWidget(),
       body: SingleChildScrollView(
         child: Container(
           decoration: const BoxDecoration(
@@ -36,7 +42,7 @@ class MyMoviesPages extends StatelessWidget {
             Stack(
               children: <Widget>[
                 SizedBox(
-                  height: 640,
+                  height: 600,
                   child: Stack(
                     children: <Widget>[
                       const MovieCarouselWidget(contentType),
@@ -49,20 +55,11 @@ class MyMoviesPages extends StatelessWidget {
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
-                                  Color.fromARGB(140, 0, 0, 0),
-                                  Color.fromARGB(120, 0, 0, 0),
-                                  Color.fromARGB(120, 0, 0, 0),
-                                  Color.fromARGB(0, 0, 0, 0),
-                                  Color.fromARGB(0, 0, 0, 0),
-                                  Color.fromARGB(0, 0, 0, 0),
-                                  Color.fromARGB(0, 0, 0, 0),
-                                  Color.fromARGB(0, 0, 0, 0),
-                                  Color.fromARGB(0, 0, 0, 0),
                                   Color.fromRGBO(0, 0, 0, 0),
-                                  Color.fromRGBO(0, 0, 0, 0.70),
-                                  Color.fromRGBO(0, 0, 0, 0.99),
+                                  Color.fromRGBO(0, 0, 0, 0.623),
                                   Color.fromRGBO(0, 0, 0, 1),
                                 ],
+                                stops: [0.75, 0.91, 0.96],
                               ),
                             ),
                           ),
@@ -72,51 +69,22 @@ class MyMoviesPages extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 70),
+                  margin: const EdgeInsets.only(top: 70),
                   child: const Center(
                       child: Text(
                     'Movies',
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold),
                   )),
                 ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    child: AppBar(
-                      title: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(
-                            Icons.menu,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            'HBO',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                          Icon(
-                            Icons.person,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                      centerTitle: false,
-                      backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-                      elevation: 0,
-                      scrolledUnderElevation: 0.0,
-                    ),
-                  ),
-                ),
+                AppBarWidget(_scaffoldKey)
               ],
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 20),
+              child: const NowPlayingMoviesWidget(),
             ),
             Container(
               margin: const EdgeInsets.only(bottom: 20),

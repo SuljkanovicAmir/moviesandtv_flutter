@@ -1,33 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:moviesandtv_flutter/src/models/movie_model.dart';
 import '../services/tmdb_api.dart';
 
 class SimilarContentProvider with ChangeNotifier {
-  final TMDBApi _tmdbApi = TMDBApi();
+  final TMDBApi _tmdbApi;
+  SimilarContentProvider(this._tmdbApi);
 
-  Map<String, dynamic> _similar = {};
-  Map<String, dynamic> get similar => _similar;
-
-  void clearDetails() {
-    _similar.clear();
-    notifyListeners();
-  }
-
-  Future<Map<String, dynamic>?> fetchSimilarContent(mediaType, movieId) async {
+  Future<List<MovieModel>?> getSimilarContent(mediaType, movieId) async {
     try {
-      final similarData =
-          await _tmdbApi.fetchSimilarContent(mediaType, movieId);
-      // ignore: unnecessary_null_comparison
-      if (similarData != null) {
-        _similar = similarData;
-        notifyListeners();
-        return similarData;
-      } else {
-        debugPrint('Cast are null or empty.');
-        return null;
-      }
+      final moviesResult = await _tmdbApi.getSimilarContent(mediaType, movieId);
+      notifyListeners();
+      return moviesResult;
     } catch (e) {
-      debugPrint('Error fetching cast: $e');
-      return null;
+      debugPrint('Error fetching movies: $e');
+      throw Exception('Failed to fetch movies $e');
     }
   }
 }

@@ -8,7 +8,7 @@ class ExpandableContainer extends StatefulWidget {
   const ExpandableContainer(this.mediaType, this.movieId, this.fetchCast,
       {super.key});
   @override
-  _ExpandableContainerState createState() => _ExpandableContainerState();
+  State<ExpandableContainer> createState() => _ExpandableContainerState();
 }
 
 class _ExpandableContainerState extends State<ExpandableContainer> {

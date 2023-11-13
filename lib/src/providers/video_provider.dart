@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../services/tmdb_api.dart';
 
 class VideoProvider with ChangeNotifier {
-  final TMDBApi _tmdbApi = TMDBApi();
+  final TMDBApi _tmdbApi;
+  VideoProvider(this._tmdbApi);
 
   Map<String, dynamic> _video = {};
   Map<String, dynamic> get video => _video;
@@ -15,15 +16,10 @@ class VideoProvider with ChangeNotifier {
   Future<Map<String, dynamic>?> fetchVideo(movieId) async {
     try {
       final trailer = await _tmdbApi.fetchVideo(movieId);
-      // ignore: unnecessary_null_comparison
-      if (trailer != null) {
-        _video = trailer;
-        notifyListeners();
-        return trailer;
-      } else {
-        debugPrint('Movie details are null or empty.');
-        return null;
-      }
+
+      _video = trailer;
+      notifyListeners();
+      return trailer;
     } catch (e) {
       debugPrint('Error fetching movie details: $e');
       return null;

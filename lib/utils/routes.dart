@@ -4,7 +4,6 @@ import 'package:moviesandtv_flutter/src/pages/movies_page.dart';
 import 'package:moviesandtv_flutter/src/pages/search_page.dart';
 import 'package:moviesandtv_flutter/src/pages/trailer_page.dart';
 
-import 'package:moviesandtv_flutter/src/providers/details_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/search_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -19,24 +18,10 @@ class AppRoutes {
 
         return MaterialPageRoute(
           builder: (context) {
-            final detailsProvider =
-                Provider.of<DetailsProvider>(context, listen: false);
-            return DetailsPage(mediaType, movieId, detailsProvider);
+            return DetailsPage(mediaType, movieId);
           },
         );
-      case '/similar':
-        final Map<String, dynamic> args =
-            settings.arguments as Map<String, dynamic>;
-        final String mediaType = args['mediaType'].toString();
-        final String movieId = args['movieId'].toString();
 
-        return MaterialPageRoute(
-          builder: (context) {
-            final detailsProvider =
-                Provider.of<DetailsProvider>(context, listen: false);
-            return DetailsPage(mediaType, movieId, detailsProvider);
-          },
-        );
       case '/trailer':
         final Map<String, dynamic> args =
             settings.arguments as Map<String, dynamic>;
@@ -54,10 +39,9 @@ class AppRoutes {
         );
       case '/movies':
         return MaterialPageRoute(
-          builder: (context) => const MyMoviesPages(),
+          builder: (context) => MyMoviesPages(),
         );
       default:
-        // Handle unknown routes or return null for not found routes.
         return null;
     }
   }

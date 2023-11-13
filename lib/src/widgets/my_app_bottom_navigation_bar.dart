@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moviesandtv_flutter/src/pages/favorites_page.dart';
 import 'package:moviesandtv_flutter/src/pages/home_page.dart';
 import 'package:moviesandtv_flutter/src/pages/movies_page.dart';
 import 'package:moviesandtv_flutter/src/pages/search_page.dart';
@@ -13,7 +14,7 @@ class MyAppBottomNavigationBar extends StatefulWidget {
       : super(key: key);
 
   @override
-  _MyAppBottomNavigationBarState createState() =>
+  State<MyAppBottomNavigationBar> createState() =>
       _MyAppBottomNavigationBarState();
 }
 
@@ -25,10 +26,10 @@ class _MyAppBottomNavigationBarState extends State<MyAppBottomNavigationBar> {
     final searchProvider = context.read<SearchProvider>();
 
     final List<Widget> children = [
-      const MyHomePage(),
-      const MyMoviesPages(),
-      const MyTvPage(),
-      const MyHomePage(),
+      MyHomePage(),
+      MyMoviesPages(),
+      MyTvPage(),
+      MyFavoritesPage(),
       MySearchPage(searchProvider),
     ];
 
@@ -40,7 +41,7 @@ class _MyAppBottomNavigationBarState extends State<MyAppBottomNavigationBar> {
         height: 60,
         elevation: 3,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-        backgroundColor: Color.fromARGB(193, 12, 12, 12),
+        backgroundColor: const Color.fromARGB(193, 12, 12, 12),
         selectedIndex: _currentIndex,
         onDestinationSelected: (int index) {
           setState(() {
@@ -86,11 +87,11 @@ class _MyAppBottomNavigationBarState extends State<MyAppBottomNavigationBar> {
           ),
           NavigationDestination(
             selectedIcon: Icon(
-              Icons.download,
+              Icons.favorite,
               color: Colors.black,
             ),
             icon: Icon(
-              Icons.download,
+              Icons.favorite_border_outlined,
               color: Colors.white,
             ),
             label: '',

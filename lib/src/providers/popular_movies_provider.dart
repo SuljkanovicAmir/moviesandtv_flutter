@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:moviesandtv_flutter/src/models/movie_model.dart';
 import '../services/tmdb_api.dart';
 
 class PopularMoviesProvider with ChangeNotifier {
-  final TMDBApi _tmdbApi = TMDBApi();
+  final TMDBApi _tmdbApi;
+  PopularMoviesProvider(this._tmdbApi);
 
-  List<Map<String, dynamic>> _popularMovies = [];
-  List<Map<String, dynamic>> get popularMovies => _popularMovies;
-
-  Future<void> fetchMovies() async {
+  Future<List<MovieModel>?> getPopularMovies() async {
     try {
-      _popularMovies = await _tmdbApi.fecthPopularMovies();
-      notifyListeners();
+      final moviesResult = await _tmdbApi.getPopularMovies();
+      return moviesResult;
     } catch (e) {
       debugPrint('Error fetching movies: $e');
+      throw Exception('Failed to fetch popular movies $e');
     }
   }
 }

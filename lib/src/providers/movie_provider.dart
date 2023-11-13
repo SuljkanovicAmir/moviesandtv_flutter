@@ -1,33 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:moviesandtv_flutter/src/models/movie_model.dart';
 import '../services/tmdb_api.dart';
 
 class MovieProvider with ChangeNotifier {
-  final TMDBApi _tmdbApi = TMDBApi();
+  final TMDBApi _tmdbApi;
+  MovieProvider(this._tmdbApi);
 
-  List<Map<String, dynamic>> _movies = [];
-  List<Map<String, dynamic>> get movies => _movies;
-
-  void resetData() {
-    _movies = [];
-    notifyListeners();
-  }
-
-  Future<List<Map<String, dynamic>>?> fetchMovies(String contentType) async {
+  Future<List<MovieModel>?> getContentCarousel(contentType) async {
     try {
-      final moviesData = await _tmdbApi.fetchMovies(contentType);
+      final moviesResult = await _tmdbApi.getContentCarousel(contentType);
       notifyListeners();
-      // ignore: unnecessary_null_comparison
-      if (moviesData != null) {
-        _movies = moviesData;
-        notifyListeners();
-        return moviesData;
-      } else {
-        debugPrint('Cast are null or empty.');
-        return null;
-      }
+      return moviesResult;
     } catch (e) {
-      debugPrint('Error fetching cast: $e');
-      return null;
+      debugPrint('Error fetching movies: $e');
+      throw Exception('Failed to fetch movies $e');
     }
   }
 }

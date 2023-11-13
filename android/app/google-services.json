@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "970562413262",
+    "project_id": "movieandtv-flutter",
+    "storage_bucket": "movieandtv-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:970562413262:android:9b036a1c2bde38b320669f",
+        "android_client_info": {
+          "package_name": "com.example.amir_moviesandtv_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "970562413262-8h06a3gj2jed6n94uedcdtd18c2cb0pg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.amir_moviesandtv_flutter",
+            "certificate_hash": "e28f2c59d31fbc13d396d6b62fa2222e1d90e459"
+          }
+        },
+        {
+          "client_id": "970562413262-1sjq7q1k30dbloi6o3kkscumlba31vgc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAscLQvYS3mCsgvKkf1-KTGGIQdnHnuLyI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "970562413262-1sjq7q1k30dbloi6o3kkscumlba31vgc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

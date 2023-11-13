@@ -1,81 +1,99 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:moviesandtv_flutter/src/models/movie_model.dart';
+import 'package:moviesandtv_flutter/src/models/movie_details_model.dart';
+import 'package:moviesandtv_flutter/src/models/movies_result_model.dart';
+import 'package:moviesandtv_flutter/utils/api_client.dart';
 
 class TMDBApi {
   static const apiKey = '9c48504327319ce49f2a496c8b5456b7';
   static const baseUrl = 'https://api.themoviedb.org/3';
 
-  Future<List<Map<String, dynamic>>> fetchMovies(contentType) async {
-    final response = await http
-        .get(Uri.parse('$baseUrl/trending/$contentType/week?api_key=$apiKey'));
+  final ApiClient _apiClient;
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseBody = jsonDecode(response.body);
-      final List<dynamic> results = responseBody['results'];
+  TMDBApi(this._apiClient);
 
-      final List<Map<String, dynamic>> movies = results
-          .whereType<Map<String, dynamic>>()
-          .toList(); // Only include items that are maps
-
-      return movies;
-    } else {
-      print('Response Body: ${response.body}');
+  Future<List<MovieModel>> getContentCarousel(contentType) async {
+    try {
+      final response = await _apiClient.get('trending/$contentType/week');
+      return MoviesResultModel.fromJson(response).movies;
+    } catch (e) {
+      print('Error fetching movies: $e');
       throw Exception('Failed to load movies');
     }
   }
 
-  Future<Map<String, dynamic>> fetchDetails(mediaType, movieId) async {
-    final response = await http
-        .get(Uri.parse('$baseUrl/$mediaType/$movieId?api_key=$apiKey'));
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseBody = jsonDecode(response.body);
-      var movieDetails = responseBody;
+  Future<MovieDetailModel> getMovieDetails(mediaType, movieId) async {
+    try {
+      final response = await _apiClient.get('$mediaType/$movieId');
+      final Map<String, dynamic> responseBody = response;
+      var movieDetails = MovieDetailModel.fromJson(responseBody);
 
       return movieDetails;
-    } else {
-      print('Response Body: ${response.body}');
+    } catch (e) {
+      print('Error fetching movie details: $e');
       throw Exception('Failed to load movie details');
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchTopMovies() async {
-    final response = await http.get(Uri.parse(
-        '$baseUrl/discover/movie?api_key=$apiKey&primary_release_year=2023&language=en-US&page=1&sort_by=vote_average.desc&without_genres=99,10755&vote_count.gte=200'));
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseBody = jsonDecode(response.body);
-      final List<dynamic> results = responseBody['results'];
-
-      final List<Map<String, dynamic>> topMovies = results
-          .whereType<Map<String, dynamic>>()
-          .toList(); // Only include items that are maps
-
-      return topMovies;
-    } else {
-      print('Response Body: ${response.body}');
+  Future<List<MovieModel>> getTopMovies() async {
+    final params = {
+      'primary_release_year': 2023,
+      'language': 'en-US',
+      'page': 1,
+      'sort_by': 'vote_average.desc',
+      'without_genres': '99,10755',
+      'vote_count.gte': 200,
+    };
+    final response = await _apiClient.get('discover/movie', params: params);
+    try {
+      return MoviesResultModel.fromJson(response).movies;
+    } catch (e) {
+      print('Error fetching movies: $e');
       throw Exception('Failed to load movies');
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchUpcomingMovies() async {
+  Future<List<MovieModel>> getUpcomingMovies() async {
     final now = DateTime.now();
-    final today =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-    final response = await http.get(Uri.parse(
-        '$baseUrl/movie/upcoming?api_key=$apiKey&region=US&language=en-US&release_date.gte=$today'));
+    final tomorrow = now.add(const Duration(days: 1));
+    final tomorrowFormatted =
+        '${tomorrow.year}-${tomorrow.month.toString().padLeft(2, '0')}-${tomorrow.day.toString().padLeft(2, '0')}';
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseBody = jsonDecode(response.body);
-      final List<dynamic> results = responseBody['results'];
+    final params = {
+      'region': 'US',
+      'language': 'en-US',
+      'release_date.gte': tomorrowFormatted
+    };
 
-      final List<Map<String, dynamic>> upcomingMovies = results
-          .whereType<Map<String, dynamic>>()
-          .toList(); // Only include items that are maps
+    try {
+      final response = await _apiClient.get('movie/upcoming', params: params);
+      return MoviesResultModel.fromJson(response).movies;
+    } catch (e) {
+      print('Error fetching movies: $e');
+      throw Exception('Failed to load movies');
+    }
+  }
 
-      return upcomingMovies;
-    } else {
-      print('Response Body: ${response.body}');
+  Future<List<MovieModel>> getPopularMovies() async {
+    try {
+      final response = await _apiClient.get('movie/popular');
+      return MoviesResultModel.fromJson(response).movies;
+    } catch (e) {
+      print('Error fetching movies: $e');
+      throw Exception('Failed to load movies');
+    }
+  }
+
+  Future<List<MovieModel>> getNowPlayingMovies() async {
+    try {
+      final response = await _apiClient.get('movie/now_playing');
+
+      return MoviesResultModel.fromJson(response).movies;
+    } catch (e) {
+      print('Error fetching now playing movies: $e');
       throw Exception('Failed to load movies');
     }
   }
@@ -95,26 +113,6 @@ class TMDBApi {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fecthPopularMovies() async {
-    final response = await http.get(
-      Uri.parse(
-          'https://api.themoviedb.org/3/movie/popular?api_key=$apiKey&sort_by=popularity.desc'),
-    );
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseBody = jsonDecode(response.body);
-      final List<dynamic> results = responseBody['results'];
-
-      final List<Map<String, dynamic>> popularMovies =
-          results.whereType<Map<String, dynamic>>().toList();
-
-      return popularMovies;
-    } else {
-      print('Response Body: ${response.body}');
-      throw Exception('Failed to popular movies');
-    }
-  }
-
   Future<Map<String, dynamic>> fetchCast(mediaType, movieId) async {
     final response = await http.get(Uri.parse(
         '$baseUrl/$mediaType/$movieId/credits?api_key=$apiKey&limit=10'));
@@ -130,51 +128,113 @@ class TMDBApi {
     }
   }
 
-  Future<Map<String, dynamic>> fetchSimilarContent(mediaType, movieId) async {
-    final response = await http
-        .get(Uri.parse('$baseUrl/$mediaType/$movieId/similar?api_key=$apiKey'));
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseBody = jsonDecode(response.body);
-      var similar = responseBody;
-
-      return similar;
-    } else {
-      print('Response Body: ${response.body}');
-      throw Exception('Failed to similar content');
+  Future<List<MovieModel>> getSimilarContent(mediaType, movieId) async {
+    try {
+      final response = await _apiClient.get('$mediaType/$movieId/similar');
+      return MoviesResultModel.fromJson(response).movies;
+    } catch (e) {
+      print('Error fetching now playing movies: $e');
+      throw Exception('Failed fetching now playing movies');
     }
   }
 
-  Future<Map<String, dynamic>> fetchSearch(query) async {
-    final response = await http.get(Uri.parse(
-        '$baseUrl/search/multi?api_key=$apiKey&query=$query&include_adult=false&include_video=false'));
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseBody = jsonDecode(response.body);
-      var searchData = responseBody;
-
-      return searchData;
-    } else {
-      print('Response Body: ${response.body}');
-      throw Exception('Failed to find content');
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> fetchNowPlayingMovies() async {
+  Future<List<MovieModel>> getSearch(query) async {
     final response =
-        await http.get(Uri.parse('$baseUrl/movie/now_playing?api_key=$apiKey'));
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseBody = jsonDecode(response.body);
-      final List<dynamic> results = responseBody['results'];
-
-      final List<Map<String, dynamic>> movies =
-          results.whereType<Map<String, dynamic>>().toList();
-
-      return movies;
-    } else {
-      print('Response Body: ${response.body}');
+        await _apiClient.get('search/multi', params: {'query': query});
+    try {
+      final data = MoviesResultModel.fromJson(response).movies;
+      return data;
+    } catch (e) {
+      print('Error fetching movies: $e');
       throw Exception('Failed to load movies');
     }
+  }
+
+  Future<List<MovieModel>> getOnAir() async {
+    final DateTime now = DateTime.now();
+    final DateTime nextWeek = now.add(const Duration(days: 7));
+
+    final params = {
+      'include_adult': false,
+      'language': 'en-US',
+      'page': 1,
+      'sort_by': 'popularity.desc',
+      'primary_release_date.lte': now.toIso8601String(),
+      'primary_release_date.gte': nextWeek.toIso8601String(),
+    };
+
+    final response = await _apiClient.get('discover/tv', params: params);
+
+    try {
+      return MoviesResultModel.fromJson(response).movies;
+    } catch (e) {
+      print('Error fetching movies: $e');
+      throw Exception('Failed to load movies');
+    }
+  }
+
+  Future<List<MovieModel>> getPopularTVShows() async {
+    final params = {
+      'include_adult': false,
+      'language': 'en-US',
+      'page': 1,
+      'sort_by': 'popularity.desc',
+      'first_air_date.gte': '2010-01-01',
+      'first_air_date.lte': '2020-12-31',
+      'vote_count.gte': 100,
+    };
+
+    final response = await _apiClient.get('discover/tv', params: params);
+
+    try {
+      return MoviesResultModel.fromJson(response).movies;
+    } catch (e) {
+      print('Error fetching popular TV shows: $e');
+      throw Exception('Failed to load popular TV shows');
+    }
+  }
+
+  Future<List<MovieModel>> getFavoriteContent(userId) async {
+    final List<Map<String, dynamic>> favorites = await fetchFavorites(userId);
+    print('favs $favorites');
+    List<dynamic> responses = [];
+    Map<String, dynamic> results = {};
+
+    try {
+      for (Map<String, dynamic> favorite in favorites) {
+        final movieId = favorite['movieId'];
+        final mediaType = favorite['mediaType'];
+        final response = await _apiClient.get('$mediaType/$movieId');
+        responses.add(response);
+        results = {'results': responses};
+      }
+
+      print('results $results');
+      return MoviesResultModel.fromJson(results).movies;
+    } catch (e) {
+      print('Error fetching movies: $e');
+      throw Exception('Failed to load movies');
+    }
+  }
+}
+
+Future<List<Map<String, dynamic>>> fetchFavorites(String userId) async {
+  try {
+    final DocumentSnapshot<Map<String, dynamic>> document =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    final List<dynamic> favorites = document.data()?['favorites'] ?? [];
+
+    List<Map<String, dynamic>> favoritesList = favorites.map((fav) {
+      return {
+        'movieId': fav['movieId'],
+        'mediaType': fav['mediaType'],
+      };
+    }).toList();
+
+    return favoritesList;
+  } catch (e) {
+    print('Error fetching favorites: $e');
+    throw Exception('Failed to fetch favorites');
   }
 }

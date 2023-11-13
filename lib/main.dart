@@ -1,33 +1,58 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:moviesandtv_flutter/firebase_options.dart';
 import 'package:moviesandtv_flutter/src/pages/details_page.dart';
 import 'package:moviesandtv_flutter/src/pages/home_page.dart';
 import 'package:moviesandtv_flutter/src/pages/trailer_page.dart';
 import 'package:moviesandtv_flutter/src/providers/cast_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/details_provider.dart';
+import 'package:moviesandtv_flutter/src/providers/favorites_provider.dart';
+import 'package:moviesandtv_flutter/src/providers/now_playing_provider.dart';
+import 'package:moviesandtv_flutter/src/providers/on_air_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/popular_movies_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/movie_provider.dart';
+import 'package:moviesandtv_flutter/src/providers/popular_tv_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/search_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/similar_content_provide.dart';
 import 'package:moviesandtv_flutter/src/providers/top_movies_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/upcoming_movies_provider.dart';
+import 'package:moviesandtv_flutter/src/providers/user_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/video_provider.dart';
+import 'package:moviesandtv_flutter/src/services/firebase_notif.dart';
+import 'package:moviesandtv_flutter/src/services/tmdb_api.dart';
+import 'package:moviesandtv_flutter/utils/api_client.dart';
 import 'package:provider/provider.dart';
 
 import 'src/widgets/my_app_bottom_navigation_bar.dart';
 
-void main() {
+void main() async {
+  final apiClient = ApiClient(Client());
+  final tmdbApi = TMDBApi(apiClient);
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await FirebaseNotif().initNotification();
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => MovieProvider()),
-        ChangeNotifierProvider(create: (_) => DetailsProvider()),
-        ChangeNotifierProvider(create: (_) => TopMoviesProvider()),
-        ChangeNotifierProvider(create: (_) => UpcomingMoviesProvider()),
-        ChangeNotifierProvider(create: (_) => VideoProvider()),
-        ChangeNotifierProvider(create: (_) => CastProvider()),
-        ChangeNotifierProvider(create: (_) => PopularMoviesProvider()),
-        ChangeNotifierProvider(create: (_) => SimilarContentProvider()),
-        ChangeNotifierProvider(create: (_) => SearchProvider()),
+        ChangeNotifierProvider(create: (_) => MovieProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => DetailsProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (_) => TopMoviesProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (_) => UpcomingMoviesProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (_) => VideoProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (_) => PopularTVProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (_) => CastProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (_) => PopularMoviesProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (_) => SimilarContentProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (_) => OnAirProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (_) => SearchProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (_) => FavoritesProvider(tmdbApi)),
+        ChangeNotifierProvider(
+            create: (_) => NowPlayingMoviesProvider(tmdbApi)),
       ],
       child: const MyApp(),
     ),
@@ -37,10 +62,18 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  Future<void> _initializeUser(BuildContext context) async {
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
+    await userProvider.initializeUser();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final searchProvider = Provider.of<SearchProvider>(context);
+    final searchProvider = Provider.of<SearchProvider>(context, listen: false);
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
+    userProvider.initializeUser();
 
     return MaterialApp(
       title: 'Cineboxd',
@@ -58,12 +91,9 @@ class MyApp extends StatelessWidget {
               settings.arguments as Map<String, dynamic>;
           final String mediaType = args['mediaType'].toString();
           final String movieId = args['movieId'].toString();
-          final detailsProvider =
-              Provider.of<DetailsProvider>(context, listen: false);
 
           return MaterialPageRoute(
-            builder: (context) =>
-                DetailsPage(mediaType, movieId, detailsProvider),
+            builder: (context) => DetailsPage(mediaType, movieId),
           );
         }
 
@@ -77,7 +107,7 @@ class MyApp extends StatelessWidget {
         }
         if (settings.name == '/') {
           return MaterialPageRoute(
-            builder: (context) => const MyHomePage(),
+            builder: (context) => MyHomePage(),
           );
         }
         return null;

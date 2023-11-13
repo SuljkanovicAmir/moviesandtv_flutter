@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:moviesandtv_flutter/src/models/movie_model.dart';
 import '../services/tmdb_api.dart';
 
 class UpcomingMoviesProvider with ChangeNotifier {
-  final TMDBApi _tmdbApi = TMDBApi();
+  final TMDBApi _tmdbApi;
+  UpcomingMoviesProvider(this._tmdbApi);
 
-  List<Map<String, dynamic>> _upcomingMovies = [];
-  List<Map<String, dynamic>> get upcomingMovies => _upcomingMovies;
-
-  Future<void> fetchMovies() async {
+  Future<List<MovieModel>?> getUpcomingMovies() async {
     try {
-      _upcomingMovies = await _tmdbApi.fetchUpcomingMovies();
+      final moviesResult = await _tmdbApi.getUpcomingMovies();
       notifyListeners();
+      return moviesResult;
     } catch (e) {
       print('Error fetching movies: $e');
+      throw Exception('Failed to fetch movies $e');
     }
   }
 }

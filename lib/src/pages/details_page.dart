@@ -1,22 +1,27 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:moviesandtv_flutter/src/models/movie_details_model.dart';
+import 'package:moviesandtv_flutter/src/pages/login_page.dart';
+import 'package:moviesandtv_flutter/src/pages/profile_page.dart';
 import 'package:moviesandtv_flutter/src/providers/details_provider.dart';
+import 'package:moviesandtv_flutter/src/providers/user_provider.dart';
 import 'package:moviesandtv_flutter/src/widgets/details_widget.dart';
 import 'package:provider/provider.dart';
 
 class DetailsPage extends StatelessWidget {
   final String mediaType;
   final String movieId;
-  final DetailsProvider detailsProvider;
 
-  const DetailsPage(this.mediaType, this.movieId, this.detailsProvider,
-      {super.key});
+  const DetailsPage(this.mediaType, this.movieId, {super.key});
 
   @override
   Widget build(BuildContext context) {
     final detailsProvider = context.read<DetailsProvider>();
-    Future<Map<String, dynamic>?> fetchDetails =
-        detailsProvider.fetchDetails(mediaType, movieId);
-    print('detailsmedia $mediaType');
+    User? user = Provider.of<UserProvider>(context).user;
+
+    Future<MovieDetailModel?> fetchDetails =
+        detailsProvider.getMovieDetails(mediaType, movieId);
+
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -69,17 +74,71 @@ class DetailsPage extends StatelessWidget {
                             .popUntil((route) => route.isFirst);
                       },
                       child: const Text(
-                        'HBO',
+                        'Cineboxd',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
                     ),
-                    const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                    ),
+                    Container(
+                        width: 30,
+                        height: 30,
+                        clipBehavior: Clip.hardEdge,
+                        decoration: user != null
+                            ? BoxDecoration(
+                                border: Border.all(
+                                  width: 1,
+                                  color: const Color.fromARGB(255, 51, 22, 131),
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(50.0)),
+                              )
+                            : BoxDecoration(
+                                border: Border.all(
+                                  width: 1,
+                                  color: const Color.fromARGB(0, 51, 22, 131),
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(50.0)),
+                              ),
+                        child: user != null
+                            ? GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const ProfilePage(),
+                                    ),
+                                  );
+                                },
+                                child: CircleAvatar(
+                                  radius: 12,
+                                  backgroundImage:
+                                      NetworkImage(user.photoURL ?? ''),
+                                ),
+                              )
+                            : IconButton(
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                icon: const Icon(
+                                  Icons.person,
+                                  color: Colors.white,
+                                  shadows: [
+                                    Shadow(
+                                        color: Colors.black,
+                                        offset: Offset(1.2, 0))
+                                  ],
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const LoginPage(),
+                                    ),
+                                  );
+                                },
+                              )),
                   ],
                 ),
                 centerTitle: false,

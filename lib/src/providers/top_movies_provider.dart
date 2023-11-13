@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:moviesandtv_flutter/src/models/movie_model.dart';
 import '../services/tmdb_api.dart';
 
 class TopMoviesProvider with ChangeNotifier {
-  final TMDBApi _tmdbApi = TMDBApi();
+  final TMDBApi _tmdbApi;
+  TopMoviesProvider(this._tmdbApi);
 
-  List<Map<String, dynamic>> _topMovies = [];
-  List<Map<String, dynamic>> get topMovies => _topMovies;
-
-  Future<void> fetchMovies() async {
+  Future<List<MovieModel>?> getTopMovies() async {
     try {
-      _topMovies = await _tmdbApi.fetchTopMovies();
+      final moviesResult = await _tmdbApi.getTopMovies();
+      print('2');
+
       notifyListeners();
+      return moviesResult;
     } catch (e) {
       debugPrint('Error fetching movies: $e');
+      throw Exception('Failed to fetch movies $e');
     }
   }
 }
