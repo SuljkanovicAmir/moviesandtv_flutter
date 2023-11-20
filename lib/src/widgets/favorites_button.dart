@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:moviesandtv_flutter/src/providers/favorites_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,7 @@ class FavoriteButton extends StatefulWidget {
       : super(key: key);
 
   @override
-  _FavoriteButtonState createState() => _FavoriteButtonState();
+  State<FavoriteButton> createState() => _FavoriteButtonState();
 }
 
 class _FavoriteButtonState extends State<FavoriteButton> {
@@ -32,6 +33,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
+
     if (user != null) {
       return StreamBuilder<DocumentSnapshot>(
         stream: usersCollection.doc(uid).snapshots(),
@@ -44,15 +46,12 @@ class _FavoriteButtonState extends State<FavoriteButton> {
             // Handle any errors that occurred during the Stream execution
             return Text('Error: ${snapshot.error}');
           }
-
           // Extract data from the DocumentSnapshot
           Map<String, dynamic>? data =
               snapshot.data?.data() as Map<String, dynamic>?;
 
-          // Get the current favorites list
           List<dynamic> currentFavorites = data?['favorites'] ?? [];
 
-          // Check if the movieId is in the favorites list
           bool isMovieInFavorites = false;
 
           for (var item in currentFavorites) {
@@ -108,6 +107,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
   void toggleFavoriteStatus(
       bool isFavorite, String movieId, String mediaType, String uid) async {
     User? user = Provider.of<UserProvider>(context, listen: false).user;
+    final favoriteProvider = context.read<FavoritesProvider>();
 
     if (user != null) {
       if (isFavorite) {
@@ -164,23 +164,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
               Radius.circular(20.0),
             ));
       }
-    } else {
-      showToast('You are not Signed In',
-          textStyle: const TextStyle(color: Color(0xFFFFFFFF)),
-          context: context,
-          animation: StyledToastAnimation.fade,
-          reverseAnimation: StyledToastAnimation.fade,
-          position: StyledToastPosition.top,
-          animDuration: const Duration(seconds: 1),
-          duration: const Duration(seconds: 4),
-          curve: Curves.easeInOut,
-          reverseCurve: Curves.linear,
-          backgroundColor: const Color.fromARGB(255, 32, 32, 32),
-          textPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          borderRadius: const BorderRadius.all(
-            Radius.circular(20.0),
-          ));
-      return null;
+      await favoriteProvider.getFavoriteContent(uid);
     }
   }
 }

@@ -5,6 +5,7 @@ class MovieDetailEntity {
   final String? releaseDate;
   final String? voteAverage;
   final String? backdropPath;
+  final String? genres;
   final String posterPath;
 
   const MovieDetailEntity({
@@ -15,5 +16,6 @@ class MovieDetailEntity {
     required this.voteAverage,
     required this.backdropPath,
     required this.posterPath,
+    required this.genres,
   });
 }

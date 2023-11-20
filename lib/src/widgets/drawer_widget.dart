@@ -67,7 +67,7 @@ class DrawerWidget extends StatelessWidget {
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MyMoviesPages()),
+                MaterialPageRoute(builder: (context) => const MyMoviesPages()),
               );
             },
           ),
@@ -79,7 +79,7 @@ class DrawerWidget extends StatelessWidget {
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MyTvPage()),
+                MaterialPageRoute(builder: (context) => const MyTvPage()),
               );
             },
           ),

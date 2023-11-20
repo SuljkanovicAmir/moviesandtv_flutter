@@ -44,82 +44,147 @@ class MyFavoritesPage extends StatelessWidget {
             ],
           ),
           if (user != null)
-            FutureBuilder<List<MovieModel>?>(
-              future: favoriteProvider.getFavoriteContent(user.uid),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Container(height: 500, color: Colors.black);
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  List<MovieModel>? data = snapshot.data;
-                  return SizedBox(
-                    height: 330,
-                    child: Column(
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          color: Colors.transparent,
-                          padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
-                          child: const Text(
-                            'Favorites',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontSize: 16,
+            Expanded(
+              child: FutureBuilder<List<MovieModel>?>(
+                future: favoriteProvider.getFavoriteContent(user.uid),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    List<MovieModel>? data = snapshot.data;
+                    return Container(
+                      height: MediaQuery.sizeOf(context).height,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Color(0xFF000000),
+                            Color(0xFF000000),
+                            Color(0xFF000000),
+                            Color(0xFF000000),
+                            Color(0xFF000000),
+                            Color(0xFF000000),
+                            Color.fromARGB(255, 1, 3, 7),
+                            Color.fromARGB(255, 3, 10, 20),
+                            Color.fromARGB(255, 3, 14, 31),
+                            Color(0xFF041125),
+                            Color(0xFF041125),
+                          ],
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            color: Colors.transparent,
+                            padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
+                            child: const Text(
+                              'Favorites',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                fontSize: 16,
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: data!.length,
-                            itemBuilder: (context, index) {
-                              final movie = data[index];
-                              final posterPath = movie.posterPath;
-                              return GestureDetector(
-                                onTap: () {
-                                  final movieId = movie.id;
-                                  String mediaType = '';
-                                  if (movie.title.isNotEmpty) {
-                                    mediaType = 'movie';
-                                  } else {
-                                    mediaType = 'tv';
-                                  }
-                                  Navigator.pushNamed(context, '/details',
-                                      arguments: {
-                                        'mediaType': mediaType,
-                                        'movieId': movieId
-                                      });
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 0,
-                                    horizontal: 10,
-                                  ),
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                        '${ApiConstants.BASE_IMAGE_URL}$posterPath',
-                                    width: 170,
-                                    fit: BoxFit.contain,
-                                    placeholder: (context, url) => const Center(
-                                      child: CircularProgressIndicator(
-                                        color:
-                                            Color.fromARGB(160, 255, 255, 255),
+                          Expanded(
+                            child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: data!.length,
+                              itemBuilder: (context, index) {
+                                final movie = data[index];
+
+                                return GestureDetector(
+                                  onTap: () {
+                                    final movieId = movie.id;
+                                    String mediaType = '';
+                                    if (movie.title.isNotEmpty) {
+                                      mediaType = 'movie';
+                                    } else {
+                                      mediaType = 'tv';
+                                    }
+                                    Navigator.pushNamed(context, '/details',
+                                        arguments: {
+                                          'mediaType': mediaType,
+                                          'movieId': movieId
+                                        });
+                                  },
+                                  child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 0,
+                                        horizontal: 15,
                                       ),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                  ),
-                                ),
-                              );
-                            },
+                                      child: Container(
+                                          decoration: const BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Color.fromARGB(
+                                                    22, 255, 255, 255),
+                                                spreadRadius: 0,
+                                                blurRadius: 0,
+                                                offset: Offset(0, 0),
+                                              ),
+                                            ],
+                                          ),
+                                          margin:
+                                              const EdgeInsets.only(bottom: 20),
+                                          height: 150,
+                                          width:
+                                              MediaQuery.sizeOf(context).width,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              CachedNetworkImage(
+                                                imageUrl:
+                                                    '${ApiConstants.BASE_IMAGE_URL}${movie.posterPath}',
+                                                fit: BoxFit.contain,
+                                                placeholder: (context, url) =>
+                                                    const Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: Color.fromARGB(
+                                                        127, 255, 255, 255),
+                                                  ),
+                                                ),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
+                                              ),
+                                              Flexible(
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(15),
+                                                  child: Text(
+                                                    movie.title.isNotEmpty
+                                                        ? movie.title
+                                                        : movie.name,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 3,
+                                                    softWrap: true,
+                                                    style: const TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ))),
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              },
+                        ],
+                      ),
+                    );
+                  }
+                },
+              ),
             )
           else
             Container(

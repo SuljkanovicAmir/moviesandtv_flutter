@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moviesandtv_flutter/src/widgets/anime_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/appbar_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/drawer_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/popular_movies_widget.dart';
@@ -74,6 +75,10 @@ class MyHomePage extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(bottom: 20),
               child: const UpcomingMoviesWidget(),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 20),
+              child: const AnimeWidget(),
             ),
             Container(
               margin: const EdgeInsets.only(bottom: 20),

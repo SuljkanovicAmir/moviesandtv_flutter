@@ -1,13 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart';
 import 'package:moviesandtv_flutter/firebase_options.dart';
 import 'package:moviesandtv_flutter/src/pages/details_page.dart';
 import 'package:moviesandtv_flutter/src/pages/home_page.dart';
 import 'package:moviesandtv_flutter/src/pages/trailer_page.dart';
+import 'package:moviesandtv_flutter/src/providers/anime_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/cast_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/details_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/favorites_provider.dart';
+import 'package:moviesandtv_flutter/src/providers/filter_content_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/now_playing_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/on_air_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/popular_movies_provider.dart';
@@ -45,6 +48,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UpcomingMoviesProvider(tmdbApi)),
         ChangeNotifierProvider(create: (_) => VideoProvider(tmdbApi)),
         ChangeNotifierProvider(create: (_) => PopularTVProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (_) => AnimeProvider(tmdbApi)),
+        ChangeNotifierProvider(create: (_) => FilterContentProvider(tmdbApi)),
         ChangeNotifierProvider(create: (_) => CastProvider(tmdbApi)),
         ChangeNotifierProvider(create: (_) => PopularMoviesProvider(tmdbApi)),
         ChangeNotifierProvider(create: (_) => SimilarContentProvider(tmdbApi)),
@@ -62,12 +67,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  Future<void> _initializeUser(BuildContext context) async {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
-    await userProvider.initializeUser();
-  }
-
   @override
   Widget build(BuildContext context) {
     final searchProvider = Provider.of<SearchProvider>(context, listen: false);
@@ -83,6 +82,7 @@ class MyApp extends StatelessWidget {
             background: Colors.black,
             seedColor: const Color.fromARGB(0, 104, 58, 183)),
         useMaterial3: true,
+        textTheme: GoogleFonts.poppinsTextTheme(),
       ),
       initialRoute: '/',
       onGenerateRoute: (settings) {

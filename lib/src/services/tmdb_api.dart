@@ -157,6 +157,7 @@ class TMDBApi {
     final params = {
       'include_adult': false,
       'language': 'en-US',
+      'with_original_language': 'en',
       'page': 1,
       'sort_by': 'popularity.desc',
       'primary_release_date.lte': now.toIso8601String(),
@@ -191,6 +192,48 @@ class TMDBApi {
     } catch (e) {
       print('Error fetching popular TV shows: $e');
       throw Exception('Failed to load popular TV shows');
+    }
+  }
+
+  Future<List<MovieModel>> getTopRatedAnimeTVShows() async {
+    final params = {
+      'include_adult': false,
+      'with_origin_country': 'JP',
+      'with_original_language': 'ja',
+      'page': 1,
+      'sort_by': 'popularity.desc',
+      'with_genres': '16',
+      'first_air_date.gte': '2010-01-01',
+      'first_air_date.lte': '2019-12-31',
+      'vote_count.gte': 100,
+    };
+
+    final response = await _apiClient.get('discover/tv', params: params);
+
+    try {
+      return MoviesResultModel.fromJson(response).movies;
+    } catch (e) {
+      print('Error fetching top-rated anime TV shows: $e');
+      throw Exception('Failed to load top-rated anime TV shows');
+    }
+  }
+
+  Future<List<MovieModel>> getFilteredContent(mediaType, genre) async {
+    final params = {
+      'include_adult': false,
+      'sort_by': 'popularity.desc',
+      'with_genres': genre,
+      'vote_count.gte': 10,
+    };
+
+    final response =
+        await _apiClient.get('discover/$mediaType', params: params);
+
+    try {
+      return MoviesResultModel.fromJson(response).movies;
+    } catch (e) {
+      print('Error fetching top-rated anime TV shows: $e');
+      throw Exception('Failed to load top-rated anime TV shows');
     }
   }
 

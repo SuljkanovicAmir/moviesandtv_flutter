@@ -45,6 +45,7 @@ class MyDetailsWidget extends StatelessWidget {
             return const Text('No similar content available.');
           } else {
             MovieDetailModel? data = snapshot.data;
+
             return SingleChildScrollView(
               child: Container(
                 padding: const EdgeInsets.only(bottom: 200),
@@ -153,6 +154,12 @@ class MyDetailsWidget extends StatelessWidget {
                                       const SizedBox(width: 15),
                                       Text(
                                         data?.releaseDate ?? '',
+                                        style: const TextStyle(
+                                            color: Color(0xFFB4B4B4)),
+                                      ),
+                                      const SizedBox(width: 15),
+                                      Text(
+                                        data?.genres ?? '',
                                         style: const TextStyle(
                                             color: Color(0xFFB4B4B4)),
                                       ),

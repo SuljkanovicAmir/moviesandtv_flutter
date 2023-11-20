@@ -39,7 +39,7 @@ class AppRoutes {
         );
       case '/movies':
         return MaterialPageRoute(
-          builder: (context) => MyMoviesPages(),
+          builder: (context) => const MyMoviesPages(),
         );
       default:
         return null;

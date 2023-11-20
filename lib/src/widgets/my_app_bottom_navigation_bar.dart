@@ -27,8 +27,8 @@ class _MyAppBottomNavigationBarState extends State<MyAppBottomNavigationBar> {
 
     final List<Widget> children = [
       MyHomePage(),
-      MyMoviesPages(),
-      MyTvPage(),
+      const MyMoviesPages(),
+      const MyTvPage(),
       MyFavoritesPage(),
       MySearchPage(searchProvider),
     ];
