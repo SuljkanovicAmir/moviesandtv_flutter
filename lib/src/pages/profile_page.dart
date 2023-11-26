@@ -12,13 +12,17 @@ class ProfilePage extends StatelessWidget {
     User? user = Provider.of<UserProvider>(context, listen: false).user;
 
     return Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          forceMaterialTransparency: true,
+          backgroundColor: Colors.transparent,
           iconTheme: const IconThemeData(color: Colors.white),
         ),
-        body: Container(
+        body: SingleChildScrollView(
+            child: Container(
           width: MediaQuery.sizeOf(context).width,
           height: MediaQuery.sizeOf(context).height,
+          margin: const EdgeInsets.only(top: 100),
           padding: const EdgeInsets.symmetric(horizontal: 20),
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -117,6 +121,6 @@ class ProfilePage extends StatelessWidget {
               )
             ],
           ),
-        ));
+        )));
   }
 }

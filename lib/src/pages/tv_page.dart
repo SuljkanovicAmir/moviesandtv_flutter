@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:moviesandtv_flutter/src/widgets/appBar_widget.dart';
+import 'package:moviesandtv_flutter/src/widgets/appbar_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/drawer_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/genre_buttons.dart';
 import 'package:moviesandtv_flutter/src/widgets/genred_content_widget.dart';
@@ -9,9 +9,10 @@ import 'package:moviesandtv_flutter/src/widgets/popular_movies_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/popular_tv_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/top_movies_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/upcoming_movies_widget.dart';
+import 'package:moviesandtv_flutter/utils/genres_tv.dart';
 
 class MyTvPage extends StatefulWidget {
-  const MyTvPage({super.key});
+  const MyTvPage({Key? key}) : super(key: key);
 
   @override
   State<MyTvPage> createState() => _MyTvPageState();
@@ -26,23 +27,11 @@ class _MyTvPageState extends State<MyTvPage> {
   Widget build(BuildContext context) {
     const String contentType = 'tv';
 
-    Map<String, String> genres = {
-      'Featured': '',
-      'Action & Adventure': '10759',
-      'Animation': '16',
-      'Comedy': '35',
-      'Crime': '80',
-      'Documentary': '99',
-      'Drama': '18',
-      'Family': '10751',
-      'Kids': '10762',
-      'Fantasy & Sci-Fi': '10765',
-      'Reality': '10764',
-    };
-
     return Scaffold(
       key: _scaffoldKey,
       drawer: const DrawerWidget(),
+      extendBodyBehindAppBar: true,
+      appBar: AppBarWidget(_scaffoldKey),
       body: SingleChildScrollView(
         child: Container(
           decoration: const BoxDecoration(
@@ -105,7 +94,6 @@ class _MyTvPageState extends State<MyTvPage> {
                         fontWeight: FontWeight.bold),
                   )),
                 ),
-                AppBarWidget(_scaffoldKey)
               ],
             ),
             GenreButtons(

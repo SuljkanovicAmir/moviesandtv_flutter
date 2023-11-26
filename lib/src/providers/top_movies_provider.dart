@@ -9,7 +9,6 @@ class TopMoviesProvider with ChangeNotifier {
   Future<List<MovieModel>?> getTopMovies() async {
     try {
       final moviesResult = await _tmdbApi.getTopMovies();
-      print('2');
 
       notifyListeners();
       return moviesResult;

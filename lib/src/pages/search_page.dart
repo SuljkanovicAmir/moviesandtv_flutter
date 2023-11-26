@@ -106,6 +106,8 @@ class _MySearchPageState extends State<MySearchPage> {
                 child: GridView.count(
                   padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
                   childAspectRatio: 0.7,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
                   crossAxisCount: 2,
                   mainAxisSpacing: 20,
                   crossAxisSpacing: 10,
@@ -142,9 +144,10 @@ class _MySearchPageState extends State<MySearchPage> {
                                       '${ApiConstants.BASE_IMAGE_URL}$posterPath',
                                   width: double.infinity,
                                   fit: BoxFit.fitHeight,
-                                  placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator(
-                                      color: Color.fromARGB(160, 255, 255, 255),
+                                  placeholder: (context, url) => Center(
+                                    child: Container(
+                                      color:
+                                          const Color.fromARGB(133, 49, 49, 49),
                                     ),
                                   ),
                                 )));

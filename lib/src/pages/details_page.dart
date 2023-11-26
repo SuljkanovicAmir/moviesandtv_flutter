@@ -49,7 +49,7 @@ class DetailsPage extends StatelessWidget {
             left: 0,
             right: 0,
             child: Container(
-              padding: const EdgeInsets.only(left: 15, right: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 5),
               child: AppBar(
                 automaticallyImplyLeading: false,
                 iconTheme: const IconThemeData(
@@ -63,7 +63,13 @@ class DetailsPage extends StatelessWidget {
                         width: 30.0,
                         child: IconButton(
                           padding: const EdgeInsets.all(0.0),
-                          icon: const Icon(Icons.arrow_back),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            shadows: [
+                              Shadow(
+                                  color: Colors.black, offset: Offset(0, 1.4))
+                            ],
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -78,6 +84,10 @@ class DetailsPage extends StatelessWidget {
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w900,
+                          shadows: [
+                            Shadow(
+                                color: Colors.black, offset: Offset(-1.5, 1.5))
+                          ],
                         ),
                       ),
                     ),

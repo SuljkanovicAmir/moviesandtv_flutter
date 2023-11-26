@@ -146,11 +146,10 @@ class MyFavoritesPage extends StatelessWidget {
                                                     '${ApiConstants.BASE_IMAGE_URL}${movie.posterPath}',
                                                 fit: BoxFit.contain,
                                                 placeholder: (context, url) =>
-                                                    const Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: Color.fromARGB(
-                                                        127, 255, 255, 255),
+                                                    Center(
+                                                  child: Container(
+                                                    color: const Color.fromARGB(
+                                                        133, 49, 49, 49),
                                                   ),
                                                 ),
                                                 errorWidget:
@@ -159,7 +158,8 @@ class MyFavoritesPage extends StatelessWidget {
                                               ),
                                               Flexible(
                                                 child: Container(
-                                                  padding: const EdgeInsets.all(15),
+                                                  padding:
+                                                      const EdgeInsets.all(15),
                                                   child: Text(
                                                     movie.title.isNotEmpty
                                                         ? movie.title

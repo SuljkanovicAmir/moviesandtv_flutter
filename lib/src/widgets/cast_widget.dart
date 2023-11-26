@@ -71,7 +71,7 @@ class _ExpandableContainerState extends State<ExpandableContainer> {
                       ),
                       height: isExpanded ? 370.0 : 0.0,
                       margin: const EdgeInsets.only(
-                          bottom: 40, right: 10, left: 10),
+                          bottom: 20, right: 10, left: 10),
                       child: ListView.builder(
                         itemCount: 8,
                         itemBuilder: (context, index) {

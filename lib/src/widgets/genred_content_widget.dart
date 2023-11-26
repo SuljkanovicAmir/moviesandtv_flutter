@@ -21,7 +21,10 @@ class GenredWidget extends StatelessWidget {
           filteredProvider.getFilteredContent(contentType, selectedGenreValue),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return Container(
+            height: 100,
+            color: const Color.fromARGB(255, 0, 0, 0),
+          );
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -34,6 +37,7 @@ class GenredWidget extends StatelessWidget {
         } else {
           return Container(
             padding: const EdgeInsets.only(bottom: 50),
+            color: Colors.transparent,
             child: GridView.count(
               padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
               childAspectRatio: 0.7,
@@ -68,9 +72,9 @@ class GenredWidget extends StatelessWidget {
                           imageUrl: '${ApiConstants.BASE_IMAGE_URL}$posterPath',
                           width: double.infinity,
                           fit: BoxFit.fitHeight,
-                          placeholder: (context, url) => const Center(
-                            child: CircularProgressIndicator(
-                              color: Color.fromARGB(160, 255, 255, 255),
+                          placeholder: (context, url) => Center(
+                            child: Container(
+                              color: const Color.fromARGB(133, 49, 49, 49),
                             ),
                           ),
                         ),

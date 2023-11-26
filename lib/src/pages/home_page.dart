@@ -18,6 +18,8 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       key: _scaffoldKey,
       drawer: const DrawerWidget(),
+      extendBodyBehindAppBar: true,
+      appBar: AppBarWidget(_scaffoldKey),
       body: SingleChildScrollView(
         child: Container(
           decoration: const BoxDecoration(
@@ -69,7 +71,6 @@ class MyHomePage extends StatelessWidget {
                     ],
                   ),
                 ),
-                AppBarWidget(_scaffoldKey),
               ],
             ),
             Container(

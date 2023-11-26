@@ -8,6 +8,7 @@ import 'package:moviesandtv_flutter/src/widgets/now_playing_movies_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/popular_movies_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/top_movies_widget.dart';
 import 'package:moviesandtv_flutter/src/widgets/upcoming_movies_widget.dart';
+import 'package:moviesandtv_flutter/utils/genres_movie.dart';
 
 class MyMoviesPages extends StatefulWidget {
   const MyMoviesPages({Key? key}) : super(key: key);
@@ -25,24 +26,11 @@ class _MyMoviesPagesState extends State<MyMoviesPages> {
   Widget build(BuildContext context) {
     const String contentType = 'movie';
 
-    Map<String, String> genres = {
-      'Featured': '',
-      'Action': '28',
-      'Adventure': '12',
-      'Animation': '16',
-      'Comedy': '35',
-      'Crime': '80',
-      'Fantasy': '14',
-      'Documentary': '99',
-      'Drama': '18',
-      'Family': '10751',
-      'Sci-Fi': '878',
-      'Horror': '27',
-    };
-
     return Scaffold(
       key: _scaffoldKey,
       drawer: const DrawerWidget(),
+      extendBodyBehindAppBar: true,
+      appBar: AppBarWidget(_scaffoldKey),
       body: SingleChildScrollView(
         child: Container(
           decoration: const BoxDecoration(
@@ -107,7 +95,6 @@ class _MyMoviesPagesState extends State<MyMoviesPages> {
                       ),
                     ),
                   ),
-                  AppBarWidget(_scaffoldKey)
                 ],
               ),
               GenreButtons(

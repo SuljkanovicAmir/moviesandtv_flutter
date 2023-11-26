@@ -19,6 +19,7 @@ class _GenreButtonsState extends State<GenreButtons> {
   Widget build(BuildContext context) {
     return Container(
       height: 35,
+      color: Colors.black,
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,

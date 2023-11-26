@@ -78,10 +78,9 @@ class UpcomingMoviesWidget extends StatelessWidget {
                                   child: CachedNetworkImage(
                                     imageUrl:
                                         '${ApiConstants.BASE_IMAGE_URL}$backdropPath',
-                                    placeholder: (context, url) => const Center(
-                                      child: CircularProgressIndicator(
-                                        color:
-                                            Color.fromARGB(160, 255, 255, 255),
+                                    placeholder: (context, url) => Center(
+                                      child: Container(
+                                        color: const Color.fromARGB(133, 49, 49, 49),
                                       ),
                                     ),
                                     errorWidget: (context, url, error) =>

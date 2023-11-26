@@ -239,7 +239,7 @@ class TMDBApi {
 
   Future<List<MovieModel>> getFavoriteContent(userId) async {
     final List<Map<String, dynamic>> favorites = await fetchFavorites(userId);
-    print('favs $favorites');
+
     List<dynamic> responses = [];
     Map<String, dynamic> results = {};
 

@@ -24,13 +24,13 @@ class SimilarContentWidget extends StatelessWidget {
           } else {
             List<MovieModel>? data = snapshot.data;
             return SizedBox(
-              height: 330,
+              height: 300,
               child: Column(
                 children: [
                   Container(
                     alignment: Alignment.centerLeft,
                     color: Colors.transparent,
-                    padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                     child: const Text(
                       'Similar',
                       style: TextStyle(
@@ -40,7 +40,7 @@ class SimilarContentWidget extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 260,
+                    height: 250,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: data!.length,
@@ -66,18 +66,20 @@ class SimilarContentWidget extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 0, horizontal: 10),
-                                child: CachedNetworkImage(
-                                  imageUrl:
-                                      '${ApiConstants.BASE_IMAGE_URL}$posterPath',
+                                child: SizedBox(
+                                  height: 250,
                                   width: 170,
-                                  fit: BoxFit.contain,
-                                  placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator(
-                                      color: Color.fromARGB(160, 255, 255, 255),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        '${ApiConstants.BASE_IMAGE_URL}$posterPath',
+                                    placeholder: (context, url) => Center(
+                                      child: Container(
+                                        color: const Color.fromARGB(133, 49, 49, 49),
+                                      ),
                                     ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
                                   ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
                                 ),
                               ));
                         }

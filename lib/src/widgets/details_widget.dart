@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:moviesandtv_flutter/src/models/movie_model.dart';
 import 'package:moviesandtv_flutter/src/models/movie_details_model.dart';
 import 'package:moviesandtv_flutter/src/providers/cast_provider.dart';
@@ -48,7 +49,7 @@ class MyDetailsWidget extends StatelessWidget {
 
             return SingleChildScrollView(
               child: Container(
-                padding: const EdgeInsets.only(bottom: 200),
+                padding: const EdgeInsets.only(bottom: 100),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -74,26 +75,48 @@ class MyDetailsWidget extends StatelessWidget {
                       children: [
                         SizedBox(
                           height: 600,
-                          child: data?.posterPath != null
-                              ? CachedNetworkImage(
-                                  imageUrl:
-                                      '${ApiConstants.BASE_IMAGE_URL}${data?.posterPath}',
-                                  fit: BoxFit.cover,
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 580,
-                                  placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator(
-                                        color:
-                                            Color.fromARGB(131, 255, 255, 255)),
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                )
-                              : const Icon(
-                                  Icons.not_interested_sharp,
-                                  size: 100,
-                                  color: Colors.grey,
-                                ),
+                          child: MediaQuery.of(context).size.width > 500
+                              ? data?.backdropPath != null
+                                  ? CachedNetworkImage(
+                                      imageUrl:
+                                          '${ApiConstants.BASE_IMAGE_BACKDROP_URL}${data?.backdropPath}',
+                                      fit: BoxFit.cover,
+                                      width: MediaQuery.of(context).size.width,
+                                      placeholder: (context, url) =>
+                                          const Center(
+                                        child: CircularProgressIndicator(
+                                          color: Color.fromARGB(
+                                              131, 255, 255, 255),
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                    )
+                                  : const Icon(
+                                      Icons.not_interested_sharp,
+                                      size: 100,
+                                      color: Colors.grey,
+                                    )
+                              : data?.posterPath != null
+                                  ? CachedNetworkImage(
+                                      imageUrl:
+                                          '${ApiConstants.BASE_IMAGE_URL}${data?.posterPath}',
+                                      fit: BoxFit.cover,
+                                      width: MediaQuery.of(context).size.width,
+                                      placeholder: (context, url) => Center(
+                                        child: Container(
+                                          color:
+                                              const Color.fromARGB(133, 49, 49, 49),
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                    )
+                                  : const Icon(
+                                      Icons.not_interested_sharp,
+                                      size: 100,
+                                      color: Colors.grey,
+                                    ),
                         ),
                         Positioned.fill(
                           bottom: -5,
@@ -105,24 +128,11 @@ class MyDetailsWidget extends StatelessWidget {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                   colors: [
-                                    Color.fromARGB(140, 0, 0, 0),
-                                    Color.fromARGB(120, 0, 0, 0),
-                                    Color.fromARGB(50, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0),
                                     Color.fromRGBO(0, 0, 0, 0),
-                                    Color.fromRGBO(0, 0, 0, 0.50),
-                                    Color.fromRGBO(0, 0, 0, 0.90),
-                                    Color.fromRGBO(0, 0, 0, 0.99),
+                                    Color.fromRGBO(0, 0, 0, 0.623),
                                     Color.fromRGBO(0, 0, 0, 1),
                                   ],
+                                  stops: [0.60, 0.70, 0.80],
                                 ),
                               ),
                             ),
@@ -133,42 +143,72 @@ class MyDetailsWidget extends StatelessWidget {
                             left: 0,
                             right: 0,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
+                                  alignment: Alignment.centerLeft,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 5, 5, 5),
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.sizeOf(context).width *
+                                              0.8),
+                                  child: SelectableText(
+                                    data?.title ?? '',
+                                    style: GoogleFonts.lato(
+                                      textStyle: const TextStyle(
+                                        color: Colors.white,
+                                        height: 1.2,
+                                        shadows: [
+                                          Shadow(
+                                              color: Colors.black,
+                                              offset: Offset(1.2, 0))
+                                        ],
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 25, vertical: 0),
+                                      horizontal: 20, vertical: 0),
                                   child: Row(
                                     children: [
                                       if (mediaType == 'tv')
                                         Text(
                                           data?.networkName ?? '',
                                           style: const TextStyle(
-                                              color: Color(0xFFB4B4B4)),
+                                              color: Color(0xFFB4B4B4),
+                                              fontSize: 12),
                                         )
                                       else
                                         Text(
                                           '${data?.runtime} MIN',
                                           style: const TextStyle(
-                                              color: Color(0xFFB4B4B4)),
+                                              color: Color(0xFFB4B4B4),
+                                              fontSize: 12),
                                         ),
-                                      const SizedBox(width: 15),
+                                      const SizedBox(width: 10),
                                       Text(
                                         data?.releaseDate ?? '',
                                         style: const TextStyle(
-                                            color: Color(0xFFB4B4B4)),
+                                            color: Color(0xFFB4B4B4),
+                                            fontSize: 12),
                                       ),
-                                      const SizedBox(width: 15),
+                                      const SizedBox(width: 10),
                                       Text(
                                         data?.genres ?? '',
                                         style: const TextStyle(
-                                            color: Color(0xFFB4B4B4)),
+                                            color: Color(0xFFB4B4B4),
+                                            fontSize: 12),
                                       ),
                                     ],
                                   ),
                                 ),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
+                                      horizontal: 10),
                                   child: Row(
                                     children: [
                                       IconButton(
@@ -181,7 +221,7 @@ class MyDetailsWidget extends StatelessWidget {
                                         icon: const Icon(
                                           Icons.play_circle_outline,
                                           color: Colors.white,
-                                          size: 70,
+                                          size: 60,
                                         ),
                                       ),
                                       Expanded(
@@ -207,29 +247,17 @@ class MyDetailsWidget extends StatelessWidget {
                             )),
                       ],
                     ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
-                      child: Text(
-                        data?.title ?? '',
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 25),
-                      ),
+                    const SizedBox(
+                      height: 10,
                     ),
                     Container(
-                      padding: const EdgeInsets.all(20),
-                      child: Text(
-                        data?.overview ?? 'No details',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
                       child: Row(
                         children: [
                           const Icon(
                             Icons.star_rate_rounded,
-                            color: Color.fromARGB(255, 165, 118, 15),
+                            color: Color.fromARGB(255, 204, 149, 32),
                           ),
                           const SizedBox(width: 5),
                           Text(
@@ -239,6 +267,14 @@ class MyDetailsWidget extends StatelessWidget {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      child: SelectableText(
+                        data?.overview ?? 'No details',
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                     ExpandableContainer(mediaType, movieId, fetchCast),
