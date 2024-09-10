@@ -6,20 +6,20 @@ import 'package:moviesandtv_flutter/src/providers/favorites_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
-class FavoriteButton extends StatefulWidget {
+class WatchlistButton extends StatefulWidget {
   final String movieId;
   final String mediaType;
-  const FavoriteButton(this.mediaType, {required this.movieId, Key? key})
+  const WatchlistButton(this.mediaType, {required this.movieId, Key? key})
       : super(key: key);
 
   @override
-  State<FavoriteButton> createState() => _FavoriteButtonState();
+  State<WatchlistButton> createState() => _WatchlistButtonState();
 }
 
-class _FavoriteButtonState extends State<FavoriteButton> {
+class _WatchlistButtonState extends State<WatchlistButton> {
   late String uid;
   late CollectionReference usersCollection;
-  late CollectionReference favoritesCollection;
+  late CollectionReference watchlistCollection;
 
   @override
   void initState() {
@@ -27,7 +27,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
     User? user = FirebaseAuth.instance.currentUser;
     uid = user?.uid ?? '';
     usersCollection = FirebaseFirestore.instance.collection('users');
-    favoritesCollection = FirebaseFirestore.instance.collection('favorites');
+    watchlistCollection = FirebaseFirestore.instance.collection('watchlist');
   }
 
   @override
@@ -50,13 +50,13 @@ class _FavoriteButtonState extends State<FavoriteButton> {
           Map<String, dynamic>? data =
               snapshot.data?.data() as Map<String, dynamic>?;
 
-          List<dynamic> currentFavorites = data?['favorites'] ?? [];
+          List<dynamic> currentWatchlist = data?['watchlist'] ?? [];
 
-          bool isMovieInFavorites = false;
+          bool isMovieInWatchlist = false;
 
-          for (var item in currentFavorites) {
+          for (var item in currentWatchlist) {
             if (item['movieId'] == widget.movieId) {
-              isMovieInFavorites = true;
+              isMovieInWatchlist = true;
               break;
             }
           }
@@ -68,21 +68,21 @@ class _FavoriteButtonState extends State<FavoriteButton> {
                 children: [
                   GestureDetector(
                     child: Icon(
-                      isMovieInFavorites
-                          ? Icons.remove_red_eye_rounded
-                          : Icons.remove_red_eye_outlined,
-                      color: isMovieInFavorites
+                      isMovieInWatchlist
+                          ? Icons.watch_later_rounded
+                          : Icons.watch_later_outlined,
+                      color: isMovieInWatchlist
                           ? const Color.fromARGB(255, 0, 0, 0)
                           : const Color.fromARGB(255, 109, 0, 0),
                       size: 40,
                     ),
                     onTap: () {
-                      toggleFavoriteStatus(isMovieInFavorites, widget.movieId,
+                      toggleFavoriteStatus(isMovieInWatchlist, widget.movieId,
                           widget.mediaType, uid);
                     },
                   ),
                   Text(
-                    isMovieInFavorites ? 'Watched' : 'Watch',
+                    isMovieInWatchlist ? 'Watchlist' : 'Watchlist',
                     style: const TextStyle(fontSize: 14),
                   ),
                 ],
@@ -93,16 +93,15 @@ class _FavoriteButtonState extends State<FavoriteButton> {
       );
     } else {
       // Handle the case when the user is not logged in
-
       return Container(
         width: 80,
         child: Center(
           child: Column(
             children: [
               GestureDetector(
-                child: Icon(
-                  Icons.remove_red_eye_outlined,
-                  color: const Color.fromARGB(255, 109, 0, 0),
+                child: const Icon(
+                  Icons.watch_later_outlined,
+                  color: Color.fromARGB(255, 109, 0, 0),
                   size: 40,
                 ),
                 onTap: () {
@@ -124,9 +123,9 @@ class _FavoriteButtonState extends State<FavoriteButton> {
                       ));
                 },
               ),
-              Text(
-                'Watch',
-                style: const TextStyle(fontSize: 14),
+              const Text(
+                'Watchlist',
+                style: TextStyle(fontSize: 14),
               ),
             ],
           ),
@@ -143,7 +142,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
     if (user != null) {
       if (isFavorite) {
         await usersCollection.doc(uid).update({
-          'favorites': FieldValue.arrayRemove([
+          'watchlist': FieldValue.arrayRemove([
             {
               'movieId': movieId,
               'mediaType': mediaType,
@@ -151,7 +150,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
           ]),
         });
         // ignore: use_build_context_synchronously
-        showToast('Removed from Watched',
+        showToast('Removed from Watchlist',
             textStyle:
                 const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
             context: context,
@@ -170,7 +169,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
             ));
       } else {
         await usersCollection.doc(uid).update({
-          'favorites': FieldValue.arrayUnion([
+          'watchlist': FieldValue.arrayUnion([
             {
               'movieId': movieId,
               'mediaType': mediaType,
@@ -178,7 +177,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
           ]),
         });
         // ignore: use_build_context_synchronously
-        showToast('Added to Watched',
+        showToast('Added to Watchlist',
             textStyle: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
             context: context,
             animation: StyledToastAnimation.fade,

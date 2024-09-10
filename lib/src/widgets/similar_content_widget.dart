@@ -16,80 +16,101 @@ class SimilarContentWidget extends StatelessWidget {
         future: getSimilar,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return Container(
+              height: 300,
+              color: Color.fromARGB(0, 255, 255, 255),
+            );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (!snapshot.hasData) {
             return const Text('No similar content available.');
           } else {
             List<MovieModel>? data = snapshot.data;
-            return SizedBox(
-              height: 300,
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    color: Colors.transparent,
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    child: const Text(
-                      'Similar',
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 255),
-                        fontSize: 16,
+            print(data);
+            if (data != null && data.isNotEmpty) {
+              return SizedBox(
+                height: 300,
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      color: Colors.transparent,
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                      child: const Text(
+                        'Similar',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 250,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: data!.length,
-                      itemBuilder: (context, index) {
-                        final movie = data[index];
-                        final posterPath = movie.posterPath;
-                        if (posterPath.isNotEmpty) {
-                          return GestureDetector(
-                              onTap: () {
-                                final movieId = movie.id;
-                                String mediaType = '';
-                                if (movie.title.isNotEmpty) {
-                                  mediaType = 'movie';
-                                } else {
-                                  mediaType = 'tv';
-                                }
-                                Navigator.pushNamed(context, '/details',
-                                    arguments: {
-                                      'mediaType': mediaType,
-                                      'movieId': movieId
-                                    });
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 0, horizontal: 10),
-                                child: SizedBox(
-                                  height: 250,
-                                  width: 170,
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                        '${ApiConstants.BASE_IMAGE_URL}$posterPath',
-                                    placeholder: (context, url) => Center(
-                                      child: Container(
-                                        color: const Color.fromARGB(133, 49, 49, 49),
+                    SizedBox(
+                      height: 250,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: data.length,
+                        itemBuilder: (context, index) {
+                          final movie = data[index];
+                          final posterPath = movie.posterPath;
+                          if (posterPath.isNotEmpty) {
+                            return GestureDetector(
+                                onTap: () {
+                                  final movieId = movie.id;
+                                  String mediaType = '';
+                                  if (movie.title.isNotEmpty) {
+                                    mediaType = 'movie';
+                                  } else {
+                                    mediaType = 'tv';
+                                  }
+                                  Navigator.pushNamed(context, '/details',
+                                      arguments: {
+                                        'mediaType': mediaType,
+                                        'movieId': movieId
+                                      });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 10),
+                                  child: SizedBox(
+                                    height: 250,
+                                    width: 170,
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          '${ApiConstants.BASE_IMAGE_URL}$posterPath',
+                                      placeholder: (context, url) => Center(
+                                        child: Container(
+                                          color: const Color.fromARGB(
+                                              133, 49, 49, 49),
+                                        ),
                                       ),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
                                     ),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
                                   ),
-                                ),
-                              ));
-                        }
-                        return null;
-                      },
+                                ));
+                          }
+                          return null;
+                        },
+                      ),
                     ),
+                  ],
+                ),
+              );
+            } else {
+              return Container(
+                margin: EdgeInsets.symmetric(vertical: 15),
+                alignment: Alignment.center,
+                color: Colors.transparent,
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: const Text(
+                  'Can\'t find similar content',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    fontSize: 16,
                   ),
-                ],
-              ),
-            );
+                ),
+              );
+            }
           }
         });
   }

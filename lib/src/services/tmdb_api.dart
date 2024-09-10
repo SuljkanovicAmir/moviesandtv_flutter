@@ -259,6 +259,29 @@ class TMDBApi {
       throw Exception('Failed to load movies');
     }
   }
+
+  Future<List<MovieModel>> getWatchlistContent(userId) async {
+    final List<Map<String, dynamic>> watchlists = await fetchWatchlist(userId);
+
+    List<dynamic> responses = [];
+    Map<String, dynamic> results = {};
+
+    try {
+      for (Map<String, dynamic> watchlist in watchlists) {
+        final movieId = watchlist['movieId'];
+        final mediaType = watchlist['mediaType'];
+        final response = await _apiClient.get('$mediaType/$movieId');
+        responses.add(response);
+        results = {'results': responses};
+      }
+
+      print('results $results');
+      return MoviesResultModel.fromJson(results).movies;
+    } catch (e) {
+      print('Error fetching movies: $e');
+      throw Exception('Failed to load movies');
+    }
+  }
 }
 
 Future<List<Map<String, dynamic>>> fetchFavorites(String userId) async {
@@ -276,6 +299,27 @@ Future<List<Map<String, dynamic>>> fetchFavorites(String userId) async {
     }).toList();
 
     return favoritesList;
+  } catch (e) {
+    print('Error fetching favorites: $e');
+    throw Exception('Failed to fetch favorites');
+  }
+}
+
+Future<List<Map<String, dynamic>>> fetchWatchlist(String userId) async {
+  try {
+    final DocumentSnapshot<Map<String, dynamic>> document =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    final List<dynamic> list = document.data()?['watchlist'] ?? [];
+
+    List<Map<String, dynamic>> watchtList = list.map((fav) {
+      return {
+        'movieId': fav['movieId'],
+        'mediaType': fav['mediaType'],
+      };
+    }).toList();
+
+    return watchtList;
   } catch (e) {
     print('Error fetching favorites: $e');
     throw Exception('Failed to fetch favorites');

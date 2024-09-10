@@ -61,8 +61,7 @@ class _GenreButtonsState extends State<GenreButtons> {
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50.0),
                     side: const BorderSide(
-                        color:
-                            Color.fromARGB(68, 255, 255, 255)), // Border color
+                        color: Color.fromARGB(68, 255, 255, 255)),
                   ),
                 ),
               ),

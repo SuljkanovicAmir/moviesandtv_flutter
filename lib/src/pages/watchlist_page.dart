@@ -2,22 +2,22 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:moviesandtv_flutter/src/models/movie_model.dart';
-import 'package:moviesandtv_flutter/src/providers/favorites_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/user_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:moviesandtv_flutter/src/providers/watchlist_provider.dart';
 import 'package:moviesandtv_flutter/utils/api_constants.dart';
+import 'package:provider/provider.dart';
 
-class MyFavoritesPage extends StatelessWidget {
-  const MyFavoritesPage({super.key});
+class MyWatchlistPage extends StatelessWidget {
+  const MyWatchlistPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final favoriteProvider = context.read<FavoritesProvider>();
+    final watchlistProvider = context.read<WatchlistProvider>();
 
     User? user = Provider.of<UserProvider>(context, listen: false).user;
 
     return FutureBuilder<List<MovieModel>?>(
-      future: favoriteProvider.getFavoriteContent(user?.uid),
+      future: watchlistProvider.getWatchlistContent(user?.uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
@@ -38,7 +38,7 @@ class MyFavoritesPage extends StatelessWidget {
               scrollDirection: Axis.vertical,
               padding: const EdgeInsets.symmetric(vertical: 10),
               itemCount: data!.length,
-              // physics: const NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 final movie = data[index];
@@ -111,23 +111,3 @@ class MyFavoritesPage extends StatelessWidget {
     );
   }
 }
-
-
-/* Stack(
-            children: [
-              AppBarWidget(_scaffoldKey),
-              Container(
-                  margin: const EdgeInsets.only(top: 70),
-                  child: const Center(
-                      child: Text(
-                    'Favorites',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        letterSpacing: 1,
-                        fontWeight: FontWeight.bold),
-                  ))),
-            ],
-          ), 
-
-          */

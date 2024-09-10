@@ -29,7 +29,7 @@ class _MyAppBottomNavigationBarState extends State<MyAppBottomNavigationBar> {
       MyHomePage(),
       const MyMoviesPages(),
       const MyTvPage(),
-      MyFavoritesPage(),
+      const MyFavoritesPage(),
       MySearchPage(searchProvider),
     ];
 
@@ -87,11 +87,11 @@ class _MyAppBottomNavigationBarState extends State<MyAppBottomNavigationBar> {
           ),
           NavigationDestination(
             selectedIcon: Icon(
-              Icons.favorite,
+              Icons.list_alt,
               color: Colors.black,
             ),
             icon: Icon(
-              Icons.favorite_border_outlined,
+              Icons.list_alt_outlined,
               color: Colors.white,
             ),
             label: '',

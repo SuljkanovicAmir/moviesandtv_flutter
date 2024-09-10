@@ -24,21 +24,8 @@ class DetailsPage extends StatelessWidget {
 
     return Scaffold(
       body: Stack(
+        clipBehavior: Clip.none,
         children: <Widget>[
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Color(0xFF000000),
-                  Color(0xFF000000),
-                  Color(0xFF041125),
-                  Color(0xFF061525),
-                ],
-              ),
-            ),
-          ),
           Stack(
             children: <Widget>[
               MyDetailsWidget(mediaType, fetchDetails, movieId),
@@ -82,11 +69,13 @@ class DetailsPage extends StatelessWidget {
                       child: const Text(
                         'Cineboxd',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Color.fromARGB(181, 255, 255, 255),
                           fontWeight: FontWeight.w900,
+                          fontSize: 16,
                           shadows: [
                             Shadow(
-                                color: Colors.black, offset: Offset(-1.5, 1.5))
+                                color: Color.fromARGB(0, 0, 0, 0),
+                                offset: Offset(-1.5, 1.5))
                           ],
                         ),
                       ),

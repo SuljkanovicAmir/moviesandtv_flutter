@@ -70,7 +70,7 @@ class MovieDetailModel extends MovieDetailEntity {
       voteAverage: json['vote_average']?.toStringAsFixed(1) ?? '0.0',
       releaseDate: formattedReleaseDate,
       posterPath: json['poster_path'],
-      overview: json['overview'] ?? '',
+      overview: json['overview'] ?? 'his',
       runtime: json['runtime']?.toString() ?? '',
       backdropPath: json['backdrop_path'],
       networkName: networkName,

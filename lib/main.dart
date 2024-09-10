@@ -34,12 +34,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Cineboxd',
       themeMode: ThemeMode.dark,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             background: Colors.black,
             seedColor: const Color.fromARGB(0, 104, 58, 183)),
         useMaterial3: true,
-        textTheme: GoogleFonts.latoTextTheme(),
+        textTheme: GoogleFonts.robotoTextTheme(),
       ),
       initialRoute: '/',
       onGenerateRoute: generateRoute,

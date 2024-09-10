@@ -1,5 +1,6 @@
 import 'package:http/http.dart';
 import 'package:moviesandtv_flutter/main.dart';
+import 'package:moviesandtv_flutter/src/providers/watchlist_provider.dart';
 import 'package:moviesandtv_flutter/src/services/tmdb_api.dart';
 import 'package:moviesandtv_flutter/utils/api_client.dart';
 import 'package:provider/provider.dart';
@@ -41,6 +42,7 @@ MultiProvider buildAppProviders() {
       ChangeNotifierProvider(create: (_) => OnAirProvider(tmdbApi)),
       ChangeNotifierProvider(create: (_) => SearchProvider(tmdbApi)),
       ChangeNotifierProvider(create: (_) => FavoritesProvider(tmdbApi)),
+      ChangeNotifierProvider(create: (_) => WatchlistProvider(tmdbApi)),
       ChangeNotifierProvider(create: (_) => NowPlayingMoviesProvider(tmdbApi)),
     ],
     child: const MyApp(),

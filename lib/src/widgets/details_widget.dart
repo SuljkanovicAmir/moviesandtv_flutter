@@ -6,8 +6,8 @@ import 'package:moviesandtv_flutter/src/models/movie_details_model.dart';
 import 'package:moviesandtv_flutter/src/providers/cast_provider.dart';
 import 'package:moviesandtv_flutter/src/providers/similar_content_provide.dart';
 import 'package:moviesandtv_flutter/src/providers/video_provider.dart';
-import 'package:moviesandtv_flutter/src/widgets/favorites_button.dart';
 import 'package:moviesandtv_flutter/src/widgets/cast_widget.dart';
+import 'package:moviesandtv_flutter/src/widgets/floating_button.dart';
 import 'package:moviesandtv_flutter/src/widgets/similar_content_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:moviesandtv_flutter/utils/api_constants.dart';
@@ -47,66 +47,34 @@ class MyDetailsWidget extends StatelessWidget {
           } else {
             MovieDetailModel? data = snapshot.data;
 
-            return SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.only(bottom: 100),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0xFF000000),
-                      Color(0xFF000000),
-                      Color(0xFF000000),
-                      Color(0xFF000000),
-                      Color(0xFF000000),
-                      Color(0xFF000000),
-                      Color.fromARGB(255, 1, 3, 7),
-                      Color.fromARGB(255, 3, 10, 20),
-                      Color.fromARGB(255, 3, 14, 31),
-                      Color(0xFF041125),
-                      Color(0xFF041125),
-                    ],
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        SizedBox(
-                          height: 600,
-                          child: MediaQuery.of(context).size.width > 500
-                              ? data?.backdropPath != null
+            final name = data?.title ?? '';
+            final runtime = data?.runtime ?? '';
+
+            return Stack(children: [
+              SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.only(bottom: 50),
+                  color: Colors.black,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          SizedBox(
+                              child: Stack(
+                            children: [
+                              data?.backdropPath != null
                                   ? CachedNetworkImage(
                                       imageUrl:
-                                          '${ApiConstants.BASE_IMAGE_BACKDROP_URL}${data?.backdropPath}',
-                                      fit: BoxFit.cover,
-                                      width: MediaQuery.of(context).size.width,
-                                      placeholder: (context, url) =>
-                                          const Center(
-                                        child: CircularProgressIndicator(
-                                          color: Color.fromARGB(
-                                              131, 255, 255, 255),
-                                        ),
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                    )
-                                  : const Icon(
-                                      Icons.not_interested_sharp,
-                                      size: 100,
-                                      color: Colors.grey,
-                                    )
-                              : data?.posterPath != null
-                                  ? CachedNetworkImage(
-                                      imageUrl:
-                                          '${ApiConstants.BASE_IMAGE_URL}${data?.posterPath}',
+                                          '${ApiConstants.BASE_IMAGE_URL}${data?.backdropPath}',
                                       fit: BoxFit.cover,
                                       width: MediaQuery.of(context).size.width,
                                       placeholder: (context, url) => Center(
                                         child: Container(
-                                          color:
-                                              const Color.fromARGB(133, 49, 49, 49),
+                                          color: const Color.fromARGB(
+                                              218, 92, 92, 92),
                                         ),
                                       ),
                                       errorWidget: (context, url, error) =>
@@ -117,172 +85,206 @@ class MyDetailsWidget extends StatelessWidget {
                                       size: 100,
                                       color: Colors.grey,
                                     ),
-                        ),
-                        Positioned.fill(
-                          bottom: -5,
-                          child: IgnorePointer(
-                            ignoring: true,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Color.fromRGBO(0, 0, 0, 0),
-                                    Color.fromRGBO(0, 0, 0, 0.623),
-                                    Color.fromRGBO(0, 0, 0, 1),
-                                  ],
-                                  stops: [0.60, 0.70, 0.80],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                            bottom: -12,
-                            left: 0,
-                            right: 0,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 5, 5, 5),
-                                  constraints: BoxConstraints(
-                                      maxWidth:
-                                          MediaQuery.sizeOf(context).width *
-                                              0.8),
-                                  child: SelectableText(
-                                    data?.title ?? '',
-                                    style: GoogleFonts.lato(
-                                      textStyle: const TextStyle(
-                                        color: Colors.white,
-                                        height: 1.2,
-                                        shadows: [
-                                          Shadow(
-                                              color: Colors.black,
-                                              offset: Offset(1.2, 0))
+                              Positioned.fill(
+                                child: IgnorePointer(
+                                  ignoring: true,
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Color.fromRGBO(0, 0, 0, 0.400),
+                                          Color.fromRGBO(0, 0, 0, 0.400),
                                         ],
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
+                                        stops: [0.1, 1],
                                       ),
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 0),
-                                  child: Row(
-                                    children: [
-                                      if (mediaType == 'tv')
-                                        Text(
-                                          data?.networkName ?? '',
-                                          style: const TextStyle(
-                                              color: Color(0xFFB4B4B4),
-                                              fontSize: 12),
-                                        )
-                                      else
-                                        Text(
-                                          '${data?.runtime} MIN',
-                                          style: const TextStyle(
-                                              color: Color(0xFFB4B4B4),
-                                              fontSize: 12),
+                              )
+                            ],
+                          )),
+                          SizedBox(
+                              height: 230,
+                              width: MediaQuery.sizeOf(context).width,
+                              child: Center(
+                                child: GestureDetector(
+                                    child: const Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.play_circle,
+                                          color: Colors.white,
                                         ),
-                                      const SizedBox(width: 10),
-                                      Text(
-                                        data?.releaseDate ?? '',
-                                        style: const TextStyle(
-                                            color: Color(0xFFB4B4B4),
-                                            fontSize: 12),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Text(
-                                        data?.genres ?? '',
-                                        style: const TextStyle(
-                                            color: Color(0xFFB4B4B4),
-                                            fontSize: 12),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  child: Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          Navigator.pushNamed(
-                                              context, '/trailer', arguments: {
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          'Watch Trailer',
+                                          style: TextStyle(
+                                              height: 1, color: Colors.white),
+                                        )
+                                      ],
+                                    ),
+                                    onTap: () {
+                                      Navigator.pushNamed(context, '/trailer',
+                                          arguments: {
                                             'fetchVideo': fetchVideo
                                           });
-                                        },
-                                        icon: const Icon(
-                                          Icons.play_circle_outline,
-                                          color: Colors.white,
-                                          size: 60,
+                                    }),
+                              )),
+                          Positioned(
+                            left: 0,
+                            bottom: -90,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              clipBehavior: Clip.hardEdge,
+                              decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              height: 180,
+                              width: 120,
+                              child: data?.posterPath != null
+                                  ? CachedNetworkImage(
+                                      imageUrl:
+                                          '${ApiConstants.BASE_IMAGE_POSTER_URL}${data?.posterPath}',
+                                      fit: BoxFit.fitWidth,
+                                      placeholder: (context, url) => Center(
+                                        child: Container(
+                                          color: const Color.fromARGB(
+                                              255, 39, 39, 39),
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            FavoriteButton(
-                                                movieId: movieId, mediaType),
-                                            const SizedBox(width: 15),
-                                            const Icon(
-                                              Icons.file_download_rounded,
-                                              color: Colors.white,
-                                              size: 30,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.star_rate_rounded,
-                            color: Color.fromARGB(255, 204, 149, 32),
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            ('${data?.voteAverage}/10 '),
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 212, 212, 212),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                    )
+                                  : const Icon(
+                                      Icons.not_interested_sharp,
+                                      size: 100,
+                                      color: Colors.grey,
+                                    ),
                             ),
-                          ),
+                          )
                         ],
                       ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      child: SelectableText(
-                        data?.overview ?? 'No details',
-                        style: const TextStyle(color: Colors.white),
+                      Container(
+                        margin: const EdgeInsets.only(left: 140),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              padding: const EdgeInsets.fromLTRB(15, 8, 10, 2),
+                              child: SelectableText(
+                                data?.title ?? '',
+                                style: GoogleFonts.lato(
+                                  textStyle: const TextStyle(
+                                    color: Colors.white,
+                                    height: 1.2,
+                                    shadows: [
+                                      Shadow(
+                                          color: Colors.black,
+                                          offset: Offset(1.2, 0))
+                                    ],
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 2),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                textBaseline: TextBaseline.alphabetic,
+                                children: [
+                                  const Icon(
+                                    Icons.star_rate_rounded,
+                                    color: Color.fromARGB(255, 204, 149, 32),
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    ('${data?.voteAverage}/10 '),
+                                    style: const TextStyle(
+                                      color: Color.fromARGB(255, 212, 212, 212),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 2),
+                              child: Row(
+                                children: [
+                                  if (mediaType == 'tv')
+                                    Text(
+                                      data?.networkName ?? '',
+                                      style: const TextStyle(
+                                          color: Color(0xFFB4B4B4),
+                                          fontSize: 12),
+                                    )
+                                  else
+                                    Text(
+                                      '${data?.runtime} MIN',
+                                      style: const TextStyle(
+                                          color: Color(0xFFB4B4B4),
+                                          fontSize: 12),
+                                    ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    data?.releaseDate ?? '',
+                                    style: const TextStyle(
+                                        color: Color(0xFFB4B4B4), fontSize: 12),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    data?.genres ?? '',
+                                    style: const TextStyle(
+                                        color: Color(0xFFB4B4B4), fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    ExpandableContainer(mediaType, movieId, fetchCast),
-                    SimilarContentWidget(mediaType, movieId, getSimilar)
-                  ],
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(20, 40, 0, 10),
+                        child: const Text(
+                          'Overview',
+                          style: TextStyle(fontSize: 18.0, color: Colors.white),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 5),
+                        child: SelectableText(
+                          data?.overview?.trim().isEmpty ?? true
+                              ? 'No details'
+                              : data!.overview!,
+                          style: const TextStyle(
+                              color: Color.fromARGB(230, 255, 255, 255)),
+                        ),
+                      ),
+                      ExpandableContainer(mediaType, movieId, fetchCast),
+                      SimilarContentWidget(mediaType, movieId, getSimilar),
+                    ],
+                  ),
                 ),
               ),
-            );
+              FloatingButtonWidget(
+                  name: name,
+                  runtime: runtime,
+                  movieId: movieId,
+                  mediaType: mediaType),
+            ]);
           }
         });
   }

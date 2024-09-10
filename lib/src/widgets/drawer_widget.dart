@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:moviesandtv_flutter/src/pages/lists_page.dart';
 import 'package:moviesandtv_flutter/src/pages/login_page.dart';
 import 'package:moviesandtv_flutter/src/pages/movies_page.dart';
 import 'package:moviesandtv_flutter/src/pages/tv_page.dart';
@@ -80,6 +81,18 @@ class DrawerWidget extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const MyTvPage()),
+              );
+            },
+          ),
+          ListTile(
+            textColor: const Color.fromARGB(255, 255, 255, 255),
+            leading: const Icon(Icons.list_alt_rounded),
+            title: const Text('Lists'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ListsPage()),
               );
             },
           ),
